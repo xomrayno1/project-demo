@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.demo.entity.Course;
+import com.demo.entity.Student;
 import com.demo.repository.CourseRepository;
 import com.demo.service.CourseService;
 
@@ -37,6 +38,18 @@ public class CourseServiceImpl implements CourseService{
 	public Course findById(long id) {
 		// TODO Auto-generated method stub
 		return courseRepo.findById(id).orElse(null);
+	}
+
+	@Override
+	public List<Course> findByStudent(Student student) {
+		// TODO Auto-generated method stub
+		return courseRepo.findByStudent(student);
+	}
+
+	@Override
+	public Course findByIdAndStudent(long id, Student student) {
+		// TODO Auto-generated method stub
+		return courseRepo.findByIdAndStudent(id, student);
 	}
 
 }

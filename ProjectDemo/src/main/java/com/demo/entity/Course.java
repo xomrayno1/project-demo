@@ -16,6 +16,7 @@ public class Course   extends BaseEntity{
 	@Id
 	@GeneratedValue(strategy =  GenerationType.IDENTITY)
 	private long id;
+	private String code;
 	private String name;
 	private String description;
 	@ManyToMany(mappedBy = "courses")
@@ -44,6 +45,12 @@ public class Course   extends BaseEntity{
 	}
 	public void setStudents(List<Student> students) {
 		this.students = students;
+	}
+	public String getCode() {
+		return code;
+	}
+	public void setCode(String code) {
+		this.code = code;
 	}
 	
 	

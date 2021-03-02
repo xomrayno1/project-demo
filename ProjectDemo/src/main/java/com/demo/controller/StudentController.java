@@ -55,7 +55,8 @@ public class StudentController {
 	public ResponseEntity<Student> getId(@PathVariable("id") long id){
 		Student student = studentService.findById(id);
 		if(student == null) {
-			throw new ResourceNotFoundException("Student not found exception with id : "+ id);
+			throw new ApplicationException("Student not found exception with id : "+ 
+					id,HttpStatus.NOT_FOUND);
 		}
 		return new ResponseEntity<Student>(student,HttpStatus.OK);
 	}
@@ -64,7 +65,7 @@ public class StudentController {
 		if(student.getCodeStudent() != null) {
 			boolean check = studentService.isExist(student.getCodeStudent());
 			if(check) {
-				throw new ApplicationException("Invalid code");
+				throw new ApplicationException("Invalid code",HttpStatus.CONFLICT);
 			}
 		}	
 		student = studentService.save(student);
@@ -76,7 +77,8 @@ public class StudentController {
 	public ResponseEntity<Student> update(@RequestBody Student requestStudent){
 		Student student = studentService.findById(requestStudent.getId());
 		if(student == null) {
-			throw new ResourceNotFoundException("Student not found exception with id : "+ requestStudent.getId());
+			throw new ApplicationException("Student not found exception with id : "+ 
+								requestStudent.getId(),HttpStatus.NOT_FOUND);
 		}else {
 			if(requestStudent.getAddress() != null) {
 				student.setAddress(requestStudent.getAddress());
@@ -108,7 +110,8 @@ public class StudentController {
 	public ResponseEntity<List<Course>> getCourseByStudentId(@PathVariable("studentId") long studentId){
 		Student student = studentService.findById(studentId);
 		if(student == null) {
-			throw new ResourceNotFoundException("Student not found exception with id : "+ studentId);
+			throw new ApplicationException("Student not found exception with id : "+ 
+					studentId,HttpStatus.NOT_FOUND);
 		}
 		List<Course> courses = courseService.findByStudent(student);
 		if(courses.isEmpty()) {
@@ -125,7 +128,8 @@ public class StudentController {
 		}
 		Course courses = courseService.findByIdAndStudent(courseId, student);
 		if(courses == null) {
-			throw new ApplicationException("Not found exception with courseId : "+ courseId + " studentId"+ studentId);
+			throw new ApplicationException("Not found exception with courseId : "+ courseId +
+					" studentId"+ studentId,HttpStatus.NOT_FOUND);
 		}
 		
 		return new ResponseEntity<Course>(courses,HttpStatus.OK);

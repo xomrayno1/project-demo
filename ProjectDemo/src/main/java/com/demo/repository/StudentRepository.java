@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
+import com.demo.entity.Course;
 import com.demo.entity.Student;
 
 @Repository
@@ -14,4 +15,6 @@ public interface StudentRepository extends PagingAndSortingRepository<Student, L
 	List<Student> findAll();
 	
 	Student findByCodeStudent(String codeStudent);
+	
+	List<Student> findByCourses(Course course);
 }

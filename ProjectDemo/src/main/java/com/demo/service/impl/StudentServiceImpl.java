@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.demo.entity.Course;
 import com.demo.entity.Student;
 import com.demo.repository.StudentRepository;
 import com.demo.service.StudentService;
@@ -51,6 +52,12 @@ public class StudentServiceImpl  implements StudentService{
 	public boolean isExist(String code) {
 		// TODO Auto-generated method stubi
 		return studentRepo.findByCodeStudent(code) != null ? true : false ;
+	}
+
+	@Override
+	public List<Student> findByCourse(Course course) {
+		// TODO Auto-generated method stub
+		return studentRepo.findByCourses(course);
 	}
 
 }

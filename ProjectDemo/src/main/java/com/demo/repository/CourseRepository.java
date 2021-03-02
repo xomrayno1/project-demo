@@ -10,6 +10,8 @@ import com.demo.entity.Student;
 
 @Repository
 public interface CourseRepository  extends JpaRepository<Course, Long>{
-	List<Course> findByStudent(Student student);
-	Course findByIdAndStudent(long id, Student student);
+	List<Course> findByStudents(Student student);
+	Course findByIdAndStudents(long id, Student student);
+	
+	Course findByCode(String code);
 }

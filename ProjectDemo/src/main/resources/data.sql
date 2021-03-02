@@ -1,3 +1,3 @@
-INSERT INTO COURSE (create_date,update_date,name,description) values ('2021-03-01','2021-03-01','Java Advance' , 'Java nâng cao');
+INSERT INTO COURSE (code,create_date,update_date,name,description) values ('JAD','2021-03-01','2021-03-01','Java Advance' , 'Java nâng cao');
 INSERT INTO STUDENT (create_date,update_date,name,code_student,address,email) values ('2021-03-01','2021-03-01','Nguyen A', '1755241', 'Đông hoà phú yên', 'xomrayno1@gmail.com');
 INSERT INTO STUDENT (create_date,update_date,name,code_student,address,email) values ('2021-03-01','2021-03-01','Nguyen B', '1755242', 'Đông hoà - Phú Yên', 'xomrayno2@gmail.com');

@@ -11,6 +11,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -19,6 +20,7 @@ public class Student extends BaseEntity{
 	@GeneratedValue(strategy =  GenerationType.IDENTITY)
 	private long id;
 	private String name;
+	@JsonProperty("code")
 	private String codeStudent;
 	private String address;
 	private String email;

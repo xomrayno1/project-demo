@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,7 +24,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.demo.entity.Course;
 import com.demo.entity.Student;
 import com.demo.exception.ApplicationException;
-import com.demo.exception.ResourceNotFoundException;
 import com.demo.model.Pagination;
 import com.demo.response.ApiResponse;
 import com.demo.service.CourseService;
@@ -31,6 +31,7 @@ import com.demo.service.StudentService;
 
 @RestController
 @RequestMapping("/api/v1/courses")
+@CrossOrigin("http://localhost:3000")
 public class CourseController {
 
 	@Autowired

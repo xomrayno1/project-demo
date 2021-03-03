@@ -1,4 +1,4 @@
-import logo from './logo.svg';
+ 
 import './App.css';
 import CourseList from './component/course/CourseList';
 import StudentList from './component/student/StudentList';
@@ -15,7 +15,7 @@ import {
 function App() {
   return (
     <div className="App">
-      <Router> 
+      <Router > 
         <Header/>
           <Switch>
             <Route path="/courses"  component={CourseList}/>  

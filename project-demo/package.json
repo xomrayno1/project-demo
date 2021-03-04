@@ -9,6 +9,7 @@
     "axios": "^0.21.1",
     "bootstrap": "^4.6.0",
     "jquery": "^3.6.0",
+    "lodash": "^4.17.21",
     "query-string": "^6.14.1",
     "rc-dialog": "^8.5.1",
     "react": "^17.0.1",

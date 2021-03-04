@@ -8,7 +8,11 @@ const studentApi = {
     },
     getById : (params) => {  
         const url = `/api/v1/students/${params}`;
-        axiosClient.get(url);
+        return axiosClient.get(url);
+    },
+    deleteByid : (params) => {  
+        const url = `/api/v1/students/${params}`;
+        return axiosClient.delete(url);
     },
     create: (params) => {
         const url = '/api/v1/students';

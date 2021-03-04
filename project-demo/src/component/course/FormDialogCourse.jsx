@@ -5,19 +5,19 @@ import { Button } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'rc-dialog/assets/bootstrap.css';
 
-FormDialogStudent.propTypes = {
-    handleSaveStudent: PropTypes.func,
+FormDialogCourse.propTypes = {
+    handleSaveCourse: PropTypes.func,
     handleVisibleOnClick: PropTypes.func,
     formDialog: PropTypes.object
 
 };
-FormDialogStudent.defaultProps = {
-    handleSaveStudent: null,
+FormDialogCourse.defaultProps = {
+    handleSaveCourse: null,
     handleVisibleOnClick: null,
     formDialog: null
 }
-function FormDialogStudent(props) {
-    const { visible, handleVisibleOnClick, handleSaveStudent, formDialog } = props;
+function FormDialogCourse(props) {
+    const { visible, handleVisibleOnClick, handleSaveCourse, formDialog } = props;
     const [forms, setForms] = useState({});
 
     useEffect(() => {
@@ -26,8 +26,7 @@ function FormDialogStudent(props) {
             id: form.id,
             name: form.name,
             code: form.code,
-            email: form.email,
-            address: form.address
+            description : form.description
         })
     }, [formDialog])
 
@@ -38,8 +37,8 @@ function FormDialogStudent(props) {
     }
     const handleSaveDialog = (e) => {
         e.preventDefault();
-        if (!handleSaveStudent) { return; }
-        handleSaveStudent(forms);
+        if (!handleSaveCourse) { return; }
+        handleSaveCourse(forms);
         onClose();
     }
     const handleInputNameChange = (e) => {
@@ -51,8 +50,8 @@ function FormDialogStudent(props) {
     const handleInputEmailChange = (e) => {
         setForms({ ...forms, email: e.target.value });
     }
-    const handleInputAddressChange = (e) => {
-        setForms({ ...forms, address: e.target.value });
+    const handleInputDescriptionChange = (e) => {
+        setForms({ ...forms, description: e.target.value });
     }
 
     return (
@@ -75,12 +74,9 @@ function FormDialogStudent(props) {
                 <label htmlFor="code" > Code : </label>
                 <input value={forms.code} onChange={handleInputCodeChange}
                     type="text" name="code" placeholder="Code..." className="form-control" />
-                <label htmlFor="email" > Email : </label>
-                <input value={forms.email} onChange={handleInputEmailChange}
-                    type="text" name="email" placeholder="Email..." className="form-control" />
-                <label htmlFor="address" > Address : </label>
-                <input value={forms.address} onChange={handleInputAddressChange}
-                    type="text" name="address" placeholder="Address..." className="form-control" />
+                 <label htmlFor="description" > Description : </label>
+                <textarea value={forms.description} onChange={handleInputDescriptionChange}
+                    type="text" name="description"  className="form-control" />
 
             </Dialog>
 
@@ -89,4 +85,4 @@ function FormDialogStudent(props) {
     );
 }
 
-export default FormDialogStudent;
+export default FormDialogCourse;

@@ -1,15 +1,67 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Table } from 'reactstrap'
 import {useTable, useSortBy} from 'react-table'
-
+import {Button} from 'reactstrap'
+import courseApi from '../../api/courseApi';
+import Dialog from 'rc-dialog';
+import 'bootstrap/dist/css/bootstrap.css';
+import 'rc-dialog/assets/bootstrap.css';
 
 TableCourse.propTypes = {
     
 };
 
 function TableCourse(props) {
-    const { data, columns} = props;
+    const { data ,handleEditForm,handleDeleteItem} = props;
+    const [dialogDelete , setDialogDelete] = useState({
+        visible:  false,
+        id : 0
+    })
+    const [columns, setColumns] = useState(()=>{
+        return [
+            {
+                Header : 'Id',
+                accessor: 'id'
+            },{
+                Header : 'Name',
+                accessor: 'name'
+            },{
+                Header : 'Code',
+                accessor: 'code'
+            },{
+                Header : 'Description',
+                accessor: 'description'
+            },{
+                Header :  ' + ',
+                Cell : (value) => (
+                    [ <Button color="warning" key={1} onClick={() => handleButtonEdit(value.row)}>Edit</Button>,
+                        <Button color="danger" key={2} onClick={() => deleteButton(value.row)} >Delete</Button>]
+                )
+            }
+        ]
+    })
+    function handleButtonEdit(value){
+        const fetch =  async () => {
+            const { id } = value.values;
+            const data = await courseApi.getById(id);
+            if(!handleEditForm){return}
+            handleEditForm({...data})
+        }
+        fetch();
+    }
+    function deleteButton(value){
+        const { id } = value.values;
+        setDialogDelete({...dialogDelete,visible : true , id : id})
+    }
+    function onClose(){
+        setDialogDelete({...dialogDelete,visible : false , id : 0})
+    }
+    function onOkDelete(){
+        handleDeleteItem(dialogDelete.id);
+        setDialogDelete({...dialogDelete,visible : false , id : 0})
+    }
+    
     const {
         getTableProps,
         getTableBodyProps,
@@ -23,6 +75,20 @@ function TableCourse(props) {
    
     return (
         <div>
+            <Dialog
+                style={{ width: 600 }}
+                title={<div>Save</div>}
+                onClose={onClose}
+                visible={dialogDelete.visible}
+                animation="slide-fade"
+                footer={[
+                    <Button key="1" color="success" onClick={onOkDelete} >Ok</Button>,
+                    <Button key="2" color="danger"  onClick={onClose} >Close</Button>
+
+                ]}
+                >
+                    Bạn có chắc chắn muốn xóa ?
+                </Dialog>
             <Table  {...getTableProps()}>
                 <thead> 
                 {

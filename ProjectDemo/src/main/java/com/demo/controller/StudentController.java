@@ -92,19 +92,20 @@ public class StudentController {
 				student.setEmail(requestStudent.getEmail());
 			}
 			if(requestStudent.getName() != null) {
-				student.setName(requestStudent.getEmail());
+				student.setName(requestStudent.getName());
 			}
+			student = studentService.save(student);
 			return new ResponseEntity<Student>(student,HttpStatus.OK);		
 		}
 	}
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Student> deleteById(@PathVariable("id") long id){
+	public ResponseEntity<Void> deleteById(@PathVariable("id") long id){
 		Student student = studentService.findById(id);
 		if(student == null) {
 			throw new ResourceNotFoundException("Student not found exception with id : "+ id);
 		}
 		studentService.delete(student);
-		return new ResponseEntity<Student>(student,HttpStatus.NO_CONTENT);
+		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 	}
 	
 	/// get courses from student

@@ -91,6 +91,7 @@ public class CourseController {
 			if(requestCourse.getDescription() != null) {
 				course.setDescription(requestCourse.getDescription());
 			}
+			course = courseService.save(course);
 			return new ResponseEntity<Course>(course,HttpStatus.OK);		
 		}
 	}

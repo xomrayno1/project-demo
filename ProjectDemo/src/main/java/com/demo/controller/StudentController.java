@@ -32,7 +32,7 @@ import com.demo.service.StudentService;
 
 @RestController
 @RequestMapping("/api/v1/students")
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin("http://localhost:3001")
 public class StudentController {
 	
 	@Autowired

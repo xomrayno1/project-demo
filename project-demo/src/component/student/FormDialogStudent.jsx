@@ -5,6 +5,7 @@ import { Button } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'rc-dialog/assets/bootstrap.css';
 import { useSelector } from 'react-redux'
+import _ from 'lodash'
 
 import { setStudent,setFormStudent } from '../../action/action'
 import store from '../../reducer/index'
@@ -22,55 +23,55 @@ FormDialogStudent.defaultProps = {
 }
 function FormDialogStudent(props) {
     const { visible, handleVisibleOnClick, handleSaveStudent } = props;
- 
-    const formDialog = useSelector(state => state.formStudent);
+    const { form } = useSelector(state => state.formStudent);
+    const [forms, setForms] =  useState({});
      
- 
+    console.log("form render..")
+
+    useEffect(()=>{
+        setForms({
+            id: form.id,
+            name: form.name,
+            code: form.code,
+            email: form.email,
+            address: form.address
+        })
+    },[form])
+
     const onClose = () => {
         if (!handleVisibleOnClick) { return; }
         handleVisibleOnClick(false);
     }
+
     const handleSaveDialog = (e) => {
         e.preventDefault();
         if (!handleSaveStudent) { return; }
-        handleSaveStudent(formDialog);
+        handleSaveStudent(forms);
         onClose();
     }
+
     const handleInputNameChange = (e) => {
-       
-        store.dispatch(setFormStudent(
-            { ...formDialog, form : {
-                    name: e.target.value
-                } 
-            }
-        ));
+        setForms({...forms,
+            name : e.target.value
+        })
     }
+
     const handleInputCodeChange = (e) => {
-       
-       store.dispatch(setFormStudent(
-            { ...formDialog, form : {
-                code: e.target.value
-                } 
-            }
-        ));
+        setForms({...forms,
+            code : e.target.value
+        })
     }
+
     const handleInputEmailChange = (e) => {
-     
-        store.dispatch(setFormStudent(
-            { ...formDialog, form : {
-                email: e.target.value
-                } 
-             }
-        ));
+        setForms({...forms,
+            email : e.target.value
+        })
     }
-    const handleInputAddressChange = (e) => {
-         
-        store.dispatch(setFormStudent(
-            { ...formDialog, form : {
-                address: e.target.value
-                 } 
-            }
-        ));
+
+    const handleInputAddressChange = (e) => {     
+        setForms({...forms,
+            address : e.target.value
+        })
     }
 
     return (
@@ -84,20 +85,19 @@ function FormDialogStudent(props) {
                 footer={[
                     <Button key="1" color="success" onClick={handleSaveDialog}>Save</Button>,
                     <Button key="2" color="danger" onClick={onClose}>Close</Button>
-
                 ]}>
 
                 <label htmlFor="name" > Name : </label>
-                <input value={formDialog.form.name} onChange={handleInputNameChange}
+                <input value={forms.name} onChange={handleInputNameChange}
                     type="text" name="name" placeholder="Name..." className="form-control" />
                 <label htmlFor="code" > Code : </label>
-                <input value={formDialog.form.code} onChange={handleInputCodeChange}
+                <input value={forms.code} onChange={handleInputCodeChange}
                     type="text" name="code" placeholder="Code..." className="form-control" />
                 <label htmlFor="email" > Email : </label>
-                <input value={formDialog.form.email} onChange={handleInputEmailChange}
+                <input value={forms.email} onChange={handleInputEmailChange}
                     type="text" name="email" placeholder="Email..." className="form-control" />
                 <label htmlFor="address" > Address : </label>
-                <input value={formDialog.form.address} onChange={handleInputAddressChange}
+                <input value={forms.address} onChange={handleInputAddressChange}
                     type="text" name="address" placeholder="Address..." className="form-control" />
 
             </Dialog>

@@ -14,13 +14,15 @@ const studentApi = {
         const url = `/api/v1/students/${params}`;
         return axiosClient.delete(url);
     },
-    create: (params) => {
+    create:   (params) => {
         const url = '/api/v1/students';
-        return axiosClient.post(url, params);
+        
+        return axiosClient.post(url, params) ;
     },
-    update: (params) => {
+    update:   (params) => {
         const url = '/api/v1/students';
-        return axiosClient.put(url, params);
+         
+        return axiosClient.put(url, params);;
     },
 }
 export default studentApi;

@@ -63,6 +63,7 @@ function TableStudent(props) {
         const fetch =  async () => {
             const { id } = value.values;
             const data = await studentApi.getById(id);
+
             store.dispatch(setFormStudent({form : {
                 ...data
             } ,visible: true}));
@@ -95,7 +96,7 @@ function TableStudent(props) {
     return (
         <div>
             <Dialog
-                style={{ width: 600 }}
+                style={{ width: 600, height : 1000 }}
                 title={<div>Save</div>}
                 onClose={onClose}
                 visible={dialogDelete.visible}

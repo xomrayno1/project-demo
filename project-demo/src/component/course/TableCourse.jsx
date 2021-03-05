@@ -13,6 +13,7 @@ TableCourse.propTypes = {
 };
 
 function TableCourse(props) {
+    console.log("table render ...")
     const { data ,handleEditForm,handleDeleteItem} = props;
     const [dialogDelete , setDialogDelete] = useState({
         visible:  false,

@@ -24,4 +24,9 @@ axiosClient.interceptors.response.use((response) => {
     // Handle errors
         throw error;
 });
+axiosClient.defaults.headers = {
+    'Cache-Control': 'no-cache',
+    'Pragma': 'no-cache',
+    'Expires': '0',
+}
 export default axiosClient;

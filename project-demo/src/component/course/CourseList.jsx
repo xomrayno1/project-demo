@@ -10,8 +10,8 @@ CourseList.propTypes = {
 };
 
 function CourseList(props) {
+    console.log("course render ...")
     const [courses, setCourses] = useState([]);
-     
     const [formDialog, setFormDialog] = useState(() => {
         return {
             visible: false,
@@ -39,7 +39,6 @@ function CourseList(props) {
             coursesApi.create(forms);
         }
         fetch();
-        fetch();
     }
     function handleVisibleOnClick(value) {
         setFormDialog({ ...formDialog, visible: value })
@@ -66,8 +65,8 @@ function CourseList(props) {
     function handleDeleteItem(id){
         courseApi.deleteById(id);
         fetch();
-        fetch();
     }
+    console.log("course render end...")
     return (
         <div className="container">
             <h1>Course List</h1>

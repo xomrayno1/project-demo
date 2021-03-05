@@ -6,21 +6,28 @@ import { Table,Button } from 'reactstrap';
 import Dialog from 'rc-dialog';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'rc-dialog/assets/bootstrap.css';
+import { useSelector } from 'react-redux'
+
+import { setStudent,setFormStudent } from '../../action/action'
+import store from '../../reducer/index'
+
 
 TableStudent.propTypes = {
-    handleEditForm:  PropTypes.func
+ 
 };
 TableStudent.defaultProps = {
-    handleEditForm : null
+ 
 }
 
 function TableStudent(props) {
-    const {data,handleEditForm,handleDeleteItem} = props;
-     
+    const {data,handleDeleteItem} = props;
+    console.log("table render....")
     const [dialogDelete , setDialogDelete] = useState({
         visible:  false,
         id : 0
     })
+  
+
     const [columns,setColumns] = useState(()=>{
         return  [
             {
@@ -56,8 +63,9 @@ function TableStudent(props) {
         const fetch =  async () => {
             const { id } = value.values;
             const data = await studentApi.getById(id);
-            if(!handleEditForm){return}
-            handleEditForm({...data})
+            store.dispatch(setFormStudent({form : {
+                ...data
+            } ,visible: true}));
         }
         fetch();
     }

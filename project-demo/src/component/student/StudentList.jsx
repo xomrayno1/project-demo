@@ -3,11 +3,13 @@ import PropTypes from 'prop-types';
 import { Button } from 'reactstrap';
 import _ from 'lodash';
 import { useTable } from 'react-table'
+import { useSelector } from 'react-redux'
 
 import studentApi from '../../api/studentApi';
 import TableStudent from './TableStudent';
 import FormDialogStuden from './FormDialogStudent'
-
+import { setStudent,setFormStudent } from '../../action/action'
+import store from '../../reducer/index'
 
 import './styles/style.css';
 StudentList.propTypes = {
@@ -15,28 +17,18 @@ StudentList.propTypes = {
 };
 
 function StudentList(props) {
-    const [students, setStudents] = useState([]);
+ 
+    console.log("studentList render.....")
+    
+    const students = useSelector( state => state.studentReducer.students);
+    const formDialog = useSelector( state => state.formStudent);
 
-    const [action, setAction] = useState(1);
-
-    const [formDialog, setFormDialog] = useState(() => {
-        return {
-            visible: false,
-            form: {
-                id: '',
-                name: '',
-                code: '',
-                email: '',
-                address: ''
-            }
-        }
-    });
+  
     const fetch = async () => {
         try {
             const response = await studentApi.getAll({ limit: 10, page: 1 });
             const data = _.cloneDeep(_.get(response, 'data', []));
-            setStudents(data);
-            console.log("abc", data);
+           store.dispatch(setStudent(data));
         } catch (error) {
             console.log(error);
         }
@@ -48,8 +40,7 @@ function StudentList(props) {
 
 
     function handleEditForm(formValue) {
-        console.log({ visible: true, form: { ...formValue } })
-        setFormDialog({ visible: true, form: { ...formValue } })
+        store.dispatch(setFormStudent({ forms : {...formValue}, visible: true }))
     }
 
     function handleSaveStudent(forms) {
@@ -59,13 +50,12 @@ function StudentList(props) {
             studentApi.create(forms);
         }
         fetch();
-        fetch();
     }
     function handleVisibleOnClick(value) {
-        setFormDialog({ ...formDialog, visible: value })
+        store.dispatch(setFormStudent({ ...formDialog, visible: value }))
     }
     function handleButtonAdd(value) {
-        setFormDialog({
+        store.dispatch(setFormStudent({
             form: {
                 id: '',
                 name: '',
@@ -73,16 +63,15 @@ function StudentList(props) {
                 email: '',
                 address: ''
             },
-            visible: value
-        }
+            visible: value })
         )
+     
     }
     function handleDeleteItem(id){
         studentApi.deleteByid(id);
         fetch();
-        fetch();
     }
-
+    console.log("student render ...ends")
     return (
         <div className="container">
             <h1>Student List</h1>
@@ -92,7 +81,7 @@ function StudentList(props) {
                 handleSaveStudent={handleSaveStudent}
                 handleVisibleOnClick={handleVisibleOnClick}
                 visible={formDialog.visible}
-                formDialog={formDialog}
+                 
             />
             <TableStudent data={students}
                 className="student-list"

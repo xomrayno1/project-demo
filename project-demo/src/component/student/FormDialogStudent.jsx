@@ -4,6 +4,10 @@ import Dialog from 'rc-dialog';
 import { Button } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'rc-dialog/assets/bootstrap.css';
+import { useSelector } from 'react-redux'
+
+import { setStudent,setFormStudent } from '../../action/action'
+import store from '../../reducer/index'
 
 FormDialogStudent.propTypes = {
     handleSaveStudent: PropTypes.func,
@@ -17,21 +21,11 @@ FormDialogStudent.defaultProps = {
     formDialog: null
 }
 function FormDialogStudent(props) {
-    const { visible, handleVisibleOnClick, handleSaveStudent, formDialog } = props;
-    const [forms, setForms] = useState({});
-
-    useEffect(() => {
-        const { form } = formDialog;
-        setForms({
-            id: form.id,
-            name: form.name,
-            code: form.code,
-            email: form.email,
-            address: form.address
-        })
-    }, [formDialog])
-
-
+    const { visible, handleVisibleOnClick, handleSaveStudent } = props;
+ 
+    const formDialog = useSelector(state => state.formStudent);
+     
+ 
     const onClose = () => {
         if (!handleVisibleOnClick) { return; }
         handleVisibleOnClick(false);
@@ -39,20 +33,44 @@ function FormDialogStudent(props) {
     const handleSaveDialog = (e) => {
         e.preventDefault();
         if (!handleSaveStudent) { return; }
-        handleSaveStudent(forms);
+        handleSaveStudent(formDialog);
         onClose();
     }
     const handleInputNameChange = (e) => {
-        setForms({ ...forms, name: e.target.value });
+       
+        store.dispatch(setFormStudent(
+            { ...formDialog, form : {
+                    name: e.target.value
+                } 
+            }
+        ));
     }
     const handleInputCodeChange = (e) => {
-        setForms({ ...forms, code: e.target.value });
+       
+       store.dispatch(setFormStudent(
+            { ...formDialog, form : {
+                code: e.target.value
+                } 
+            }
+        ));
     }
     const handleInputEmailChange = (e) => {
-        setForms({ ...forms, email: e.target.value });
+     
+        store.dispatch(setFormStudent(
+            { ...formDialog, form : {
+                email: e.target.value
+                } 
+             }
+        ));
     }
     const handleInputAddressChange = (e) => {
-        setForms({ ...forms, address: e.target.value });
+         
+        store.dispatch(setFormStudent(
+            { ...formDialog, form : {
+                address: e.target.value
+                 } 
+            }
+        ));
     }
 
     return (
@@ -70,16 +88,16 @@ function FormDialogStudent(props) {
                 ]}>
 
                 <label htmlFor="name" > Name : </label>
-                <input value={forms.name} onChange={handleInputNameChange}
+                <input value={formDialog.form.name} onChange={handleInputNameChange}
                     type="text" name="name" placeholder="Name..." className="form-control" />
                 <label htmlFor="code" > Code : </label>
-                <input value={forms.code} onChange={handleInputCodeChange}
+                <input value={formDialog.form.code} onChange={handleInputCodeChange}
                     type="text" name="code" placeholder="Code..." className="form-control" />
                 <label htmlFor="email" > Email : </label>
-                <input value={forms.email} onChange={handleInputEmailChange}
+                <input value={formDialog.form.email} onChange={handleInputEmailChange}
                     type="text" name="email" placeholder="Email..." className="form-control" />
                 <label htmlFor="address" > Address : </label>
-                <input value={forms.address} onChange={handleInputAddressChange}
+                <input value={formDialog.form.address} onChange={handleInputAddressChange}
                     type="text" name="address" placeholder="Address..." className="form-control" />
 
             </Dialog>

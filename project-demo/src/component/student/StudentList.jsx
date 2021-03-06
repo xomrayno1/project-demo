@@ -27,7 +27,6 @@ function StudentList(props) {
             const response = await studentApi.getAll({ limit: 10, page: 1 });
             const data = _.cloneDeep(_.get(response, 'data', []));
             store.dispatch(setStudent(data));
-            console.log(" Đã render..")
             return response;
         } catch (error) {
             console.log(error);
@@ -64,8 +63,8 @@ function StudentList(props) {
             visible: true })
         )
     }
-    function handleDeleteItem(id){
-        studentApi.deleteByid(id);
+    async function handleDeleteItem(id){
+        await studentApi.deleteByid(id);
         fetch();
     }
      
@@ -83,7 +82,7 @@ function StudentList(props) {
             <TableStudent data={students}
                 className="student-list"
                 handleDeleteItem={handleDeleteItem}
-                />
+            />
         </div>
     );
 }

@@ -1,4 +1,4 @@
-import { SET_FORM_STUDENT } from '../common/Constant'
+import { SET_FORM_STUDENT } from '../../common/Constant'
 
 const initalState = {
     visible : false,

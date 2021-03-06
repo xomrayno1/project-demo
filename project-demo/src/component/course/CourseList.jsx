@@ -1,69 +1,73 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import { Button } from 'reactstrap'
+import {useSelector} from 'react-redux'
+
 import TableCourse from './TableCourse';
 import coursesApi from '../../api/courseApi';
 import FormDialogCourse from './FormDialogCourse';
 import courseApi from '../../api/courseApi';
+import {setCourse,setFormCourse} from '../../action/action'
+import store from '../../reducer/index'
+
+
 CourseList.propTypes = {
     
 };
 
 function CourseList(props) {
     console.log("course render ...")
-    const [courses, setCourses] = useState([]);
-    const [formDialog, setFormDialog] = useState(() => {
-        return {
-            visible: false,
-            form: {
-                id: '',
-                name: '',
-                code: '',
-                description: ''
-            }
-        }
-    });
+    const courses = useSelector(state =>
+                         state.courseReducer.course);
+    const formDialog = useSelector(state =>
+                         state.formCourse);
+        
     const fetch = async () => {
         const response = await coursesApi.getAll({limit: 10, page: 1});
         const { data } = response;
-        setCourses(data);
+        store.dispatch(setCourse(data));
     }
     useEffect( () => {
         console.log("userEffect");
         fetch();
     },[])
-    function handleSaveCourse(forms){
-        if (forms['id']) {
-            coursesApi.update(forms);
-        } else {
-            coursesApi.create(forms);
+    async function handleSaveCourse(forms){
+        const save = async () => {
+            if (forms['id']) {
+                await coursesApi.update(forms);
+            } else {
+                await  coursesApi.create(forms);
+            }
         }
+        await save();
         fetch();
     }
     function handleVisibleOnClick(value) {
-        setFormDialog({ ...formDialog, visible: value })
+        store.dispatch(setFormCourse({
+            ...formDialog, visible: value
+        }))
     }
     function handleButtonAdd(value) {
-            setFormDialog({
-                form: {
-                    id: '',
-                    name: '',
-                    code: '',
-                    description: ''
-                },
-                visible: value
-            }
-        )
+        store.dispatch(setFormCourse({
+            form: {
+                id: '',
+                name: '',
+                code: '',
+                description: ''
+            },
+            visible: value
+        }))  
+    
     }
-    function handleVisibleOnClick(value) {
-        setFormDialog({ ...formDialog, visible: value })
-    }
+   
     function handleEditForm(formValue) {
-        console.log({ visible: true, form: { ...formValue } })
-        setFormDialog({ visible: true, form: { ...formValue } })
+        store.dispatch(setFormCourse({
+            visible: true, form: { ...formValue }
+        }))  
+ 
     }
-    function handleDeleteItem(id){
-        courseApi.deleteById(id);
+    async function handleDeleteItem(id){
+        await courseApi.deleteById(id);
         fetch();
     }
     console.log("course render end...")

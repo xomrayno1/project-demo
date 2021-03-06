@@ -47,9 +47,6 @@ function FormDialogCourse(props) {
     const handleInputCodeChange = (e) => {
         setForms({ ...forms, code: e.target.value });
     }
-    const handleInputEmailChange = (e) => {
-        setForms({ ...forms, email: e.target.value });
-    }
     const handleInputDescriptionChange = (e) => {
         setForms({ ...forms, description: e.target.value });
     }
@@ -63,8 +60,10 @@ function FormDialogCourse(props) {
                 visible={visible}
                 animation="slide-fade"
                 footer={[
-                    <Button key="1" color="success" onClick={handleSaveDialog}>Save</Button>,
-                    <Button key="2" color="danger" onClick={onClose}>Close</Button>
+                    <Button key="1" color="success" 
+                        onClick={handleSaveDialog}>Save</Button>,
+                    <Button key="2" color="danger" 
+                        onClick={onClose}>Close</Button>
 
                 ]}>
 

@@ -8,6 +8,9 @@ import Dialog from 'rc-dialog';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'rc-dialog/assets/bootstrap.css';
 
+import {setCourse,setFormCourse} from '../../action/action'
+import store from '../../reducer/index'
+
 TableCourse.propTypes = {
     
 };
@@ -36,8 +39,10 @@ function TableCourse(props) {
             },{
                 Header :  ' + ',
                 Cell : (value) => (
-                    [ <Button color="warning" key={1} onClick={() => handleButtonEdit(value.row)}>Edit</Button>,
-                        <Button color="danger" key={2} onClick={() => deleteButton(value.row)} >Delete</Button>]
+                    [ <Button color="warning" key={1} 
+                            onClick={() => handleButtonEdit(value.row)}>Edit</Button>,
+                        <Button color="danger" key={2} 
+                            onClick={() => deleteButton(value.row)} >Delete</Button>]
                 )
             }
         ]
@@ -46,8 +51,9 @@ function TableCourse(props) {
         const fetch =  async () => {
             const { id } = value.values;
             const data = await courseApi.getById(id);
-            if(!handleEditForm){return}
-            handleEditForm({...data})
+            // if(!handleEditForm){return}
+            // handleEditForm({...data})
+            store.dispatch(setFormCourse({form: data, visible: true }))
         }
         fetch();
     }

@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Button } from 'reactstrap';
 import _ from 'lodash';
 import { useTable } from 'react-table'
 import { useSelector } from 'react-redux'
+ 
 
+import UserContext from '../../common/UseContext'
 import studentApi from '../../api/studentApi';
 import TableStudent from './TableStudent';
 import FormDialogStuden from './FormDialogStudent'
@@ -17,6 +19,11 @@ StudentList.propTypes = {
 };
 
 function StudentList(props) {
+
+    const user = useContext(UserContext);
+
+    console.log(user)
+
     console.log("studentList render.....")
     
     const students = useSelector( state => state.studentReducer.students);

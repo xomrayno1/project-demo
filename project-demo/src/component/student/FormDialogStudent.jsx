@@ -123,8 +123,9 @@ function FormDialogStudent(props) {
                     <label htmlFor="name" > Name : </label>
                     <input  type="text" name="name" ref={register({ required: true })}  
                         placeholder="Name..." className="form-control"  />
-                    {
-                        errors.name  &&   <Alert color="danger"  >Your input is required</Alert>
+                    { 
+                        
+                        errors.name  &&   <Alert color="danger"  >Your input is required</Alert> 
                     }
                     <label htmlFor="code" > Code : </label>
                     <input  type="text" name="code"  ref={register({ required: true,maxLength: 12 })}  

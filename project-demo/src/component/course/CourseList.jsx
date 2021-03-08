@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState,useContext} from 'react';
 import PropTypes from 'prop-types';
 import { Button } from 'reactstrap'
 import {useSelector} from 'react-redux'
@@ -9,14 +9,19 @@ import FormDialogCourse from './FormDialogCourse';
 import courseApi from '../../api/courseApi';
 import {setCourse,setFormCourse} from '../../action/action'
 import store from '../../reducer/index'
-
-
+import UserContext from '../../common/UseContext'
+ 
 CourseList.propTypes = {
     
 };
 
 function CourseList(props) {
+     
+
+   
+
     console.log("course render ...")
+     
     const courses = useSelector(state =>
                          state.courseReducer.course);
     const formDialog = useSelector(state =>

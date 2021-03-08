@@ -1,4 +1,4 @@
-import {ADD_STUDENT,DELETE_STUDENT,UPDATE_STUDENT,SET_STUDENT} from '../../common/Constant'
+import {SET_STUDENT} from '../../common/Constant'
 
 const initalState = {
     students: []

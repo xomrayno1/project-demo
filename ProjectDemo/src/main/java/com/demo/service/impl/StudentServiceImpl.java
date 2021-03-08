@@ -15,8 +15,14 @@ import com.demo.service.StudentService;
 
 @Service
 public class StudentServiceImpl  implements StudentService{
+	
 	@Autowired
-	StudentRepository studentRepo;
+	private StudentRepository studentRepo;
+
+	public StudentServiceImpl(StudentRepository studentRepo) {
+		super();
+		this.studentRepo = studentRepo;
+	}
 
 	@Override
 	public List<Student> getAll() {

@@ -31,6 +31,30 @@ public class Student extends BaseEntity{
 				)
 	private List<Course> courses;
 	 
+	
+	
+	
+	public Student() {
+		 
+	}
+	public Student( String name, String codeStudent, String address, String email ) {
+		 
+		 
+		this.name = name;
+		this.codeStudent = codeStudent;
+		this.address = address;
+		this.email = email;
+		 
+	}
+	public Student(long id, String name, String codeStudent, String address, String email ) {
+		 
+		this.id = id;
+		this.name = name;
+		this.codeStudent = codeStudent;
+		this.address = address;
+		this.email = email;
+		 
+	}
 	public long getId() {
 		return id;
 	}

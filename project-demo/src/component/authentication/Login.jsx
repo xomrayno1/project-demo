@@ -1,10 +1,9 @@
 import React, {useContext} from 'react';
 import PropTypes from 'prop-types';
-import {userForm} from 'react-hook-form'
 import { Button,Alert } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'rc-dialog/assets/bootstrap.css';
-import {useForm} from 'react-hook-form'
+import { useForm } from 'react-hook-form';
 import UserContext  from '../../common/UseContext'
 import {  useHistory } from 'react-router-dom';
 
@@ -13,7 +12,8 @@ Login.propTypes = {
 };
 
 function Login(props) {
-    const {register,setValue,errors,clearErrors,handleSubmit} = useForm();
+    const {register,errors,handleSubmit} = useForm();
+    
     const [user,setUser] = useContext(UserContext);
     const history = useHistory();
 

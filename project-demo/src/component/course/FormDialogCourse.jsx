@@ -79,7 +79,7 @@ function FormDialogCourse(props) {
                             errors.code?.type === "maxLength" && <Alert color="danger"  >Your input exceed maxLength</Alert>
                         }
                         <label htmlFor="description" > Description : </label>
-                        <textarea ref={register({required: true})}
+                        <textarea ref={register}
                             type="text" name="description"  className="form-control" />
                     </form>
 

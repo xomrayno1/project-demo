@@ -89,7 +89,7 @@ function CourseList(props) {
                 handleSaveCourse={handleSaveCourse}
                 handleVisibleOnClick={handleVisibleOnClick}
                 visible={formDialog.visible}
-                formDialog={formDialog}
+                formDialog={formDialog.form}
                 />
         </div>
     );

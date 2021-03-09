@@ -81,22 +81,21 @@ public class StudentController {
 		if(student == null) {
 			throw new ApplicationException("Student not found exception with id : "+ 
 								requestStudent.getId(),HttpStatus.NOT_FOUND);
-		}else {
-			if(requestStudent.getAddress() != null) {
-				student.setAddress(requestStudent.getAddress());
-			}
-			if(requestStudent.getCodeStudent() != null) {
-				student.setCodeStudent(requestStudent.getCodeStudent());
-			}
-			if(requestStudent.getEmail() != null) {
-				student.setEmail(requestStudent.getEmail());
-			}
-			if(requestStudent.getName() != null) {
-				student.setName(requestStudent.getName());
-			}
-			student = studentService.save(student);
-			return new ResponseEntity<Student>(student,HttpStatus.OK);		
 		}
+		if(requestStudent.getAddress() != null) {
+			student.setAddress(requestStudent.getAddress());
+		}
+		if(requestStudent.getCodeStudent() != null) {
+			student.setCodeStudent(requestStudent.getCodeStudent());
+		}
+		if(requestStudent.getEmail() != null) {
+			student.setEmail(requestStudent.getEmail());
+		}
+		if(requestStudent.getName() != null) {
+			student.setName(requestStudent.getName());
+		}
+		student = studentService.save(student);
+		return new ResponseEntity<Student>(student,HttpStatus.OK);	
 	}
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteById(@PathVariable("id") long id){

@@ -22,6 +22,20 @@ public class Course   extends BaseEntity{
 	@ManyToMany(mappedBy = "courses")
 	private List<Student> students;
 	
+	
+	
+	
+	
+	public Course() {
+		super();
+	}
+	public Course(String code, String name, String description ) {
+		super();
+		this.code = code;
+		this.name = name;
+		this.description = description;
+		 
+	}
 	public long getId() {
 		return id;
 	}

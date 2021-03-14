@@ -63,7 +63,6 @@ function TableStudent(props) {
         const fetch =  async () => {
             const { id } = value.values;
             const data = await studentApi.getById(id);
-
             store.dispatch(setFormStudent({form : {
                 ...data
             } ,visible: true}));
@@ -104,7 +103,6 @@ function TableStudent(props) {
                 footer={[
                     <Button key="1" color="success" onClick={onOkDelete} >Ok</Button>,
                     <Button key="2" color="danger"  onClick={onClose} >Close</Button>
-
                 ]}
                 >
                     Bạn có chắc chắn muốn xóa ?

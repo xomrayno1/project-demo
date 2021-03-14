@@ -1,74 +1,95 @@
 package com.demo.controller;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import org.junit.Before;
+import org.json.JSONException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.RequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import com.demo.ProjectDemoApplication;
 import com.demo.entity.Student;
-import com.demo.service.CourseService;
-import com.demo.service.StudentService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(value = StudentController.class)
-@ContextConfiguration(classes = ProjectDemoApplication.class)
-@AutoConfigureDataJpa
+@SpringBootTest(classes = ProjectDemoApplication.class,
+webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class StudentControllerTest {
-
-	MockMvc mockMvc;
 	
-	@Autowired
-	WebApplicationContext context;
+	@LocalServerPort
+	private int port;
 	
-	@MockBean
-	StudentService studentService;
+	TestRestTemplate restTemplate = new TestRestTemplate();
 	
-	@MockBean
-	CourseService courseService;
+	HttpHeaders headers = new HttpHeaders();
 	
-	@Before
-	public void setUp() {
-		mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
+	@Test
+	public void testGetAll() {
+		HttpEntity<String> entity = new HttpEntity<String>(null,headers);
+		ResponseEntity<String> response = 
+				restTemplate.exchange(createUrlWithPortUri("/api/v1/students?page=1&limit=10"),
+							HttpMethod.GET, entity, String.class);
+		assertTrue(response.getBody().length() > 0 );
+		
+	}
+	@Test
+	public void testGetById() throws JSONException {
+		HttpEntity<String> entity = new HttpEntity<String>(null,headers);
+		ResponseEntity<String> response = 
+				restTemplate.exchange(createUrlWithPortUri("/api/v1/students/1"),
+							HttpMethod.GET, entity, String.class);
+		// ('2021-03-01','2021-03-01','NguyenA', '1755241', 'PhuHoa', 'xomrayno1@gmail.com');
+		//Student student = new Student("NguyenA", "1755241", "PhuHoa", "xomrayno1@gmail.com");
+		String expected = "{id:1,name:NguyenA,address:PhuHoa,email:xomrayno1@gmail.com}";
+		JSONAssert.assertEquals(expected,  response.getBody(), false);
 	}
 	
 	@Test
-	public void testCreateMethod() throws Exception {
-		Student student = new Student(1,"Nguyen Tam","1755248","Dong Hoa - Phu Yen","xr5@gmail.com");
-		ObjectMapper objectMapper = new ObjectMapper();
-		String content = objectMapper.writeValueAsString(new Student("Nguyen Tam","1755248","Dong Hoa - Phu Yen","xr5@gmail.com"));
+	public void testCreate() {
+		Student student = new Student("NguyenD", "1755244", "TayHoa", "xomrayno5@gmail.com");
+		HttpEntity<Student> entity = new HttpEntity<Student>(student, headers);
+		ResponseEntity<String> response = restTemplate.exchange(
+				createUrlWithPortUri("/api/v1/students"),HttpMethod.POST,
+				entity,String.class
+				);
+		assertTrue(response.getStatusCode() == HttpStatus.CREATED);
+		String actual = 	response.getHeaders().get(HttpHeaders.LOCATION).toString();
+		assertTrue(actual.contains("/api/v1/students"));
 		
-		Mockito.when(
-				studentService.save(Mockito.any(Student.class))
-				).thenReturn(student);
-		RequestBuilder builder = MockMvcRequestBuilders.post("/api/v1/students")
-									.accept(MediaType.APPLICATION_JSON)
-									.content(content)
-									.contentType(MediaType.APPLICATION_JSON);
-		MvcResult mvcResult = mockMvc.perform(builder).andReturn();
-		MockHttpServletResponse response =	mvcResult.getResponse();
-		
-		assertEquals(HttpStatus.CREATED.value(), response.getStatus());
-		assertEquals("http://localhost/api/v1/students/1", response.getHeader(HttpHeaders.LOCATION));
-		
+	}
+	@Test
+	public void testUpdate() throws JSONException {
+		Student student = new Student("NguyenD", "17552442131", "TayHoa", "xomrayno5@gmail.com");
+		student.setId(2);
+		HttpEntity<Student> entity = new HttpEntity<Student>(student, headers);
+		ResponseEntity<String> response = restTemplate.exchange(
+				createUrlWithPortUri("/api/v1/students"),HttpMethod.PUT,
+				entity,String.class
+				);
+		String expected = "{id:2,name:NguyenD,address:TayHoa,email:xomrayno5@gmail.com}";
+	//	assertTrue(response.getStatusCode() == HttpStatus.OK);
+		assertEquals(response.getStatusCodeValue(), 200);
+		JSONAssert.assertEquals(expected,response.getBody(),false);
+	}
+	@Test
+	public void testDelete() {
+		HttpEntity<String> entity = new HttpEntity<String>(null,headers);
+		ResponseEntity<String> response = 
+				restTemplate.exchange(createUrlWithPortUri("/api/v1/students/1"),
+							HttpMethod.DELETE, entity, String.class);
+		assertTrue(HttpStatus.NO_CONTENT == response.getStatusCode());
+	}
+	
+	public String createUrlWithPortUri(String uri) {
+		return "http://localhost:"+ port +  uri;
 	}
 }

@@ -12,13 +12,10 @@ import 'rc-dialog/assets/bootstrap.css';
 import {setCourse,setFormCourse} from '../../action/action'
 import store from '../../reducer/index'
 
-TableCourse.propTypes = {
-    
-};
-
+ 
 function TableCourse(props) {
     console.log("table render ...")
-    const { data ,handleEditForm,handleDeleteItem} = props;
+    const { data ,handleDeleteItem} = props;
     const [dialogDelete , setDialogDelete] = useState({
         visible:  false,
         id : 0
@@ -85,7 +82,7 @@ function TableCourse(props) {
         <div>
             <Dialog
                 style={{ width: 600 }}
-                title={<div>Save</div>}
+                title={<div>Delete</div>}
                 onClose={onClose}
                 visible={dialogDelete.visible}
                 animation="slide-fade"
@@ -96,7 +93,7 @@ function TableCourse(props) {
                 ]}
                 >
                     Bạn có chắc chắn muốn xóa ?
-                </Dialog>
+            </Dialog>
             <Table  {...getTableProps()}>
                 <thead> 
                 {

@@ -3,6 +3,8 @@ package com.demo.controller;
 import java.net.URI;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -63,7 +65,7 @@ public class StudentController {
 		return new ResponseEntity<Student>(student,HttpStatus.OK);
 	}
 	@PostMapping
-	public ResponseEntity<Student> create(@RequestBody Student student){
+	public ResponseEntity<Student> create(@RequestBody @Valid Student student){
 		if(student.getCodeStudent() != null) {
 			boolean check = studentService.isExist(student.getCodeStudent());
 			if(check) {
@@ -76,7 +78,7 @@ public class StudentController {
 		return ResponseEntity.created(uri).body(student);
 	}
 	@PutMapping
-	public ResponseEntity<Student> update(@RequestBody Student requestStudent){
+	public ResponseEntity<Student> update(@RequestBody @Valid Student requestStudent){
 		Student student = studentService.findById(requestStudent.getId());
 		if(student == null) {
 			throw new ApplicationException("Student not found exception with id : "+ 

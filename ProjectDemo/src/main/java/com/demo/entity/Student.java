@@ -9,6 +9,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -19,11 +22,21 @@ public class Student extends BaseEntity{
 	@Id
 	@GeneratedValue(strategy =  GenerationType.IDENTITY)
 	private long id;
+	@NotBlank(message = "Your input is required")
+	@Size(max = 32,min = 6 ,message = "Length must be between 6 and 32" )
 	private String name;
+	
 	@JsonProperty("code")
+	@NotBlank(message = "Your input is required")
+	@Size(max = 32,min = 6 ,message = "Length must be between 6 and 12" )
 	private String codeStudent;
+	
 	private String address;
+	
+	@NotBlank(message = "Your input is required")
+	@Email(message = "Please provide a properly formatted email address")
 	private String email;
+	
 	@ManyToMany
 	@JoinTable(name = "student_course", 
 						joinColumns = @JoinColumn(name="student_id"),
@@ -31,8 +44,6 @@ public class Student extends BaseEntity{
 				)
 	private List<Course> courses;
 	 
-	
-	
 	
 	public Student() {
 		 

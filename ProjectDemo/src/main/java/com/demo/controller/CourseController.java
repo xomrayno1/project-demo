@@ -3,6 +3,8 @@ package com.demo.controller;
 import java.net.URI;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -63,7 +65,7 @@ public class CourseController {
 		return new ResponseEntity<Course>(course,HttpStatus.OK);
 	}
 	@PostMapping
-	public ResponseEntity<Course> create(@RequestBody Course course){
+	public ResponseEntity<Course> create(@RequestBody @Valid Course course){
 		if(course.getCode() != null) {
 			boolean check = courseService.isExist(course.getCode());
 			if(check) {
@@ -76,12 +78,18 @@ public class CourseController {
 		return ResponseEntity.created(uri).body(course);
 	}
 	@PutMapping
-	public ResponseEntity<Course> update(@RequestBody Course requestCourse){
+	public ResponseEntity<Course> update(@RequestBody @Valid Course requestCourse){
 		Course course = courseService.findById(requestCourse.getId());
 		if(course == null) {
 			throw new ApplicationException("Course not found exception with id : "+
 						requestCourse.getId(),HttpStatus.NOT_FOUND);
 		}else {
+			// check xem code đã tồn tại trong database chưa.
+			// nếu tồn tại thì check xem nó có phải bằng thằng mình muốn udpate
+			boolean check = courseService.isExist(requestCourse.getCode());
+			if(check && !requestCourse.getCode().equals(course.getCode())) {
+				throw new ApplicationException("Invalid code",HttpStatus.CONFLICT);	 
+			}
 			if(requestCourse.getName() != null) {
 				course.setName(requestCourse.getName());
 			}
@@ -92,7 +100,8 @@ public class CourseController {
 				course.setDescription(requestCourse.getDescription());
 			}
 			course = courseService.save(course);
-			return new ResponseEntity<Course>(course,HttpStatus.OK);		
+			return new ResponseEntity<Course>(course,HttpStatus.OK);
+			 
 		}
 	}
 	@DeleteMapping("/{id}")

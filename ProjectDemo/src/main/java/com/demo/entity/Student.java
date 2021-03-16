@@ -28,7 +28,7 @@ public class Student extends BaseEntity{
 	
 	@JsonProperty("code")
 	@NotBlank(message = "Your input is required")
-	@Size(max = 32,min = 6 ,message = "Length must be between 6 and 12" )
+	@Size(max = 12,min = 6 ,message = "Length must be between 6 and 12" )
 	private String codeStudent;
 	
 	private String address;

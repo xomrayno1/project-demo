@@ -83,6 +83,10 @@ public class StudentController {
 		if(student == null) {
 			throw new ApplicationException("Student not found exception with id : "+ 
 								requestStudent.getId(),HttpStatus.NOT_FOUND);
+		} 
+		boolean check = studentService.isExist(requestStudent.getCodeStudent());
+		if(check && !student.getCodeStudent().equals(requestStudent.getCodeStudent())) {
+			throw new ApplicationException("Invalid code",HttpStatus.CONFLICT);
 		}
 		if(requestStudent.getAddress() != null) {
 			student.setAddress(requestStudent.getAddress());

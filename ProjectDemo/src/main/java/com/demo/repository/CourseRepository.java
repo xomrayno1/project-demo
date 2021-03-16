@@ -12,6 +12,5 @@ import com.demo.entity.Student;
 public interface CourseRepository  extends JpaRepository<Course, Long>{
 	List<Course> findByStudents(Student student);
 	Course findByIdAndStudents(long id, Student student);
-	
 	Course findByCode(String code);
 }

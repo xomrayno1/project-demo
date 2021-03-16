@@ -1,13 +1,15 @@
 package com.demo.exception;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ErrorDetails {
 	private String message;
 	private String path;
 	private Date createDate;
 	private int status;
-	
+	private Map<String, String> fieldErrors = new HashMap<>();
 	
 	public ErrorDetails() {
 		 
@@ -22,7 +24,6 @@ public class ErrorDetails {
 		this.status = status;
 		 
 	}
-
 
 	public String getMessage() {
 		return message;
@@ -61,6 +62,16 @@ public class ErrorDetails {
 
 	public void setStatus(int status) {
 		this.status = status;
+	}
+
+
+	public Map<String, String> getFieldErrors() {
+		return fieldErrors;
+	}
+
+
+	public void setFieldErrors(Map<String, String> fieldErrors) {
+		this.fieldErrors = fieldErrors;
 	}
 
 

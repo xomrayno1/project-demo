@@ -6,10 +6,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @Entity
@@ -25,18 +28,19 @@ public class Course   extends BaseEntity{
 	@Size(max = 32,min = 6 ,message = "Length must be between 6 and 32" )
 	private String name;
 	private String description;
-	@ManyToMany(mappedBy = "courses")
+	@ManyToMany
+	@JoinTable(name = "student_course",
+					joinColumns = @JoinColumn(name="course_id"),
+					inverseJoinColumns = @JoinColumn(name="student_id"))
+	@JsonIgnore
 	private List<Student> students;
 	
-	
-	
-	
-	
+
 	public Course() {
-		super();
+		 
 	}
 	public Course(String code, String name, String description ) {
-		super();
+		  
 		this.code = code;
 		this.name = name;
 		this.description = description;

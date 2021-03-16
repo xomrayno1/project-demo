@@ -1,7 +1,9 @@
 package com.demo.exception;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -29,15 +31,22 @@ public class HandleException extends ResponseEntityExceptionHandler{
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 		// TODO Auto-generated method stub
-		BindingResult result = ex.getBindingResult();
+		 BindingResult result = ex.getBindingResult();
 		 List<org.springframework.validation.FieldError> fieldErrors = result.getFieldErrors();
+		 
 		 ErrorDetails errorDetails = new ErrorDetails(
-					null
+					"Validation failed"
 					,request.getDescription(false)
 					,new Date(),HttpStatus.BAD_REQUEST.value());
-		 fieldErrors.forEach(item -> {
-			 errorDetails.setMessage(item.getDefaultMessage());
-		 });
+		 
+		 if(!fieldErrors.isEmpty()) {
+			 Map<String,String> field = new HashMap<>();
+			 fieldErrors.forEach(item -> {
+				 field.put(item.getField(), item.getDefaultMessage());
+			 });
+			 errorDetails.setFieldErrors(field);
+		 }
+		  
 		 
 		return new ResponseEntity<Object>(errorDetails, HttpStatus.BAD_REQUEST);
 	}

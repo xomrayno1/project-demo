@@ -1,4 +1,4 @@
-import {SET_STUDENT} from '../../common/Constant'
+import {SET_STUDENT} from '../../../common/Constant'
 
 const initalState = {
     students: []

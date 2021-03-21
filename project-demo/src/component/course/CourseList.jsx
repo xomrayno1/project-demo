@@ -1,5 +1,5 @@
 import React, {useEffect, useState,useContext} from 'react';
-import PropTypes from 'prop-types';
+ 
 import { Button } from 'reactstrap'
 import {useSelector} from 'react-redux'
 
@@ -7,13 +7,11 @@ import TableCourse from './TableCourse';
 import coursesApi from '../../api/courseApi';
 import FormDialogCourse from './FormDialogCourse';
 import courseApi from '../../api/courseApi';
-import {setCourse,setFormCourse} from '../../action/action'
-import store from '../../reducer/index'
+import {setCourse,setFormCourse} from '../../redux/action/courseAction'
+import store from '../../redux/reducer/index'
 import UserContext from '../../common/UseContext'
  
-CourseList.propTypes = {
-    
-};
+ 
 
 function CourseList(props) {
      

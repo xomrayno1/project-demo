@@ -4,10 +4,11 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'antd/dist/antd.css'; // or 'antd/dist/antd.less' 
 import { Provider } from 'react-redux'
 
 
-import store from './reducer/index'
+import store from './redux/store'
 
 ReactDOM.render(
   <Provider store={store}>

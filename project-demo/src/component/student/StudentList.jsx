@@ -1,90 +1,73 @@
-import React, { useEffect, useState,useContext } from 'react';
- 
-import { Button } from 'reactstrap';
+import React, { useEffect, useState, useRef } from 'react';
 import _ from 'lodash';
-import { useTable } from 'react-table'
-import { useSelector } from 'react-redux'
- 
-
-import UserContext from '../../common/UseContext'
-import studentApi from '../../api/studentApi';
+import { useSelector,useDispatch } from 'react-redux'
+import {Spin} from 'antd'
 import TableStudent from './TableStudent';
-import FormDialogStuden from './FormDialogStudent'
-import { setStudent,setFormStudent } from '../../action/action'
-import store from '../../reducer/index'
+ 
+import { fetchStudentRequest } from '../../redux/action/studentAction'
+import store from '../../redux/reducer/index'
+
 
 import './styles/style.css';
  
 function StudentList(props) {
-    const user = useContext(UserContext);
+    
     console.log("studentList render.....")
-    
-    const students = useSelector( state => state.studentReducer.students);
-    const formDialog = useSelector( state => state.formStudent);
+    const dispatch = useDispatch();
+    const {data} = useSelector(state => state.student.students)
+    const {pagination} = useSelector(state => state.student.students)
+    const {isLoading} = useSelector(state=> state.student)
+    const typingTimeoutRef = useRef(false);
+    const [filter,setFilter] = useState({
+        limit : 10,
+        page : 1,
+        search : ''
+    })
+  
 
-    const fetch = async () => {
-        try {
-            const response = await studentApi.getAll({ limit: 10, page: 1 });
-            const data = _.cloneDeep(_.get(response, 'data', []));
-            store.dispatch(setStudent(data));
-            return response;
-        } catch (error) {
-            console.log(error);
-        }
-    }
-    useEffect(() => {
-        fetch();
-    }, [])
-    
-    async function handleSaveStudent(forms) {
-        const save =  async () => {
-            if (forms['id']) {
-                await  studentApi.update(forms);
-            } else {
-                await  studentApi.create(forms);
-            }
-        }
-        await save();
-        fetch();
-    }
+    useEffect(()=>{
+        dispatch(fetchStudentRequest(filter));
+    },[filter])
 
-    function handleVisibleOnClick(value) {
-        store.dispatch(setFormStudent({ ...formDialog, visible: value }))
+    
+    function handleSearchName(e){
+       if(typingTimeoutRef.current){
+           clearTimeout(typingTimeoutRef.current); 
+       }
+       typingTimeoutRef.current  = setTimeout(()=> {
+         setFilter({
+             ...filter,
+             search : e.target.value
+         })
+       },400)
     }
-    function handleButtonAdd() {
-        store.dispatch(setFormStudent({
-            form: {
-                id: '',
-                name: '',
-                code: '',
-                email: '',
-                address: ''
-            },
-            visible: true })
-        )
+    function handlePagination(){
+        console.log("pagi")
     }
-    async function handleDeleteItem(id){
-        await studentApi.deleteByid(id);
-        fetch();
-    }
-     
+    
     return (
-        <div className="container">
+       <div className="container"> 
             <h1>Student List</h1>
-            <Button color="success" onClick={() => handleButtonAdd()}
-                outline style={{ marginBottom: '10px' }} > Add</Button>
-            <FormDialogStuden 
-                handleSaveStudent={handleSaveStudent}
-                handleVisibleOnClick={handleVisibleOnClick}
-                visible={formDialog.visible}
-                 
-            />
-            <TableStudent data={students}
-                className="student-list"
-                handleDeleteItem={handleDeleteItem}
-            />
-        </div>
-    );
+            <div className="row">
+                <div className="col-sm-9"></div>
+                <div className="col-sm-3" style={{marginBottom : '25'}}>
+                    <input  className="form-control" onChange={handleSearchName}
+                        type="text" placeholder="Search name ..."  />
+                </div>
+            </div>
+            
+           <Spin spinning={isLoading}>
+                {
+                    !isLoading && <TableStudent 
+                        data={data} 
+                        pagination={pagination} 
+                        handlePagination={handlePagination}
+                    />
+                }
+           </Spin>
+          
+       </div>
+    )
 }
 
 export default StudentList;

@@ -1,4 +1,4 @@
-import { SET_COURSE } from '../../common/Constant'
+import { SET_COURSE } from '../../../common/Constant'
 
 const initalState = {
     course: [],

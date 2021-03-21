@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -54,16 +55,30 @@ public class StudentServiceImpl  implements StudentService{
 		return studentRepo.findAll(pageable);
 	}
 
-	@Override
-	public boolean isExist(String code) {
-		// TODO Auto-generated method stubi
-		return studentRepo.findByCodeStudent(code) != null ? true : false ;
-	}
+	 
 
 	@Override
 	public List<Student> findByCourse(Course course) {
 		// TODO Auto-generated method stub
 		return studentRepo.findByCourses(course);
+	}
+
+	@Override
+	public boolean isCodeExist(String code) {
+		// TODO Auto-generated method stub
+		return studentRepo.findByCodeStudent(code) != null ? true : false ;
+	}
+
+	@Override
+	public boolean isEmailExist(String email) {
+		// TODO Auto-generated method stub
+		return studentRepo.findByEmail(email) != null ? true : false ;
+	}
+
+	@Override
+	public Page<Student> findBySearchName(String search, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return studentRepo.findBySearchName(search, pageable);
 	}
 
 }

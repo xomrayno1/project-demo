@@ -2,6 +2,7 @@ package com.demo.entity;
 
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -9,32 +10,21 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Student extends BaseEntity{
 	@Id
 	@GeneratedValue(strategy =  GenerationType.IDENTITY)
-	private long id;
-	@NotBlank(message = "Your input is required")
-	@Size(max = 32,min = 6 ,message = "Length must be between 6 and 32" )
+	private Long id;
+	 
 	private String name;
-	
-	@JsonProperty("code")
-	@NotBlank(message = "Your input is required")
-	@Size(max = 12,min = 6 ,message = "Length must be between 6 and 12" )
+
+	@Column(unique = true)
 	private String codeStudent;
 	
 	private String address;
 	
-	@NotBlank(message = "Your input is required")
-	@Email(message = "Please provide a properly formatted email address")
+	@Column(unique = true)
 	private String email;
 	
 	@ManyToMany
@@ -57,7 +47,7 @@ public class Student extends BaseEntity{
 		this.email = email;
 		 
 	}
-	public Student(long id, String name, String codeStudent, String address, String email ) {
+	public Student(Long id, String name, String codeStudent, String address, String email ) {
 		 
 		this.id = id;
 		this.name = name;
@@ -66,10 +56,10 @@ public class Student extends BaseEntity{
 		this.email = email;
 		 
 	}
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	public String getName() {

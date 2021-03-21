@@ -66,4 +66,10 @@ public class CourseServiceImpl implements CourseService{
 		return courseRepo.findByCode(code) != null ? true : false;
 	}
 
+	@Override
+	public Page<Course> findBySearchName(String search, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return courseRepo.findBySearchName(search, pageable);
+	}
+
 }

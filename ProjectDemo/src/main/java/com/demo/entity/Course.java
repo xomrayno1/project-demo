@@ -9,30 +9,22 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 
 @Entity
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Course   extends BaseEntity{
 	@Id
 	@GeneratedValue(strategy =  GenerationType.IDENTITY)
-	private long id;
-	@NotBlank(message = "Your input is required")
-	@Size(max = 15,min = 3 ,message = "Length must be between 3 and 15" )
+	private Long id;
+	 
 	private String code;
-	@NotBlank(message = "Your input is required")
-	@Size(max = 32,min = 6 ,message = "Length must be between 6 and 32" )
+	 
 	private String name;
 	private String description;
 	@ManyToMany
 	@JoinTable(name = "student_course",
 					joinColumns = @JoinColumn(name="course_id"),
 					inverseJoinColumns = @JoinColumn(name="student_id"))
-	@JsonIgnore
+	 
 	private List<Student> students;
 	
 
@@ -46,10 +38,10 @@ public class Course   extends BaseEntity{
 		this.description = description;
 		 
 	}
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	public String getName() {

@@ -8,10 +8,10 @@ public class Pagination {
 	
 	
 	public Pagination() {
-		super();
+		 
 	}
 	public Pagination(long totalRows, int page, int limit) {
-		super();
+		 
 		this.totalRows = totalRows;
 		this.page = page;
 		this.limit = limit;

@@ -20,7 +20,11 @@ public interface StudentService {
 	
 	Student findById(long id);
 	
-	boolean isExist(String code);
+	boolean isCodeExist(String code);
+	
+	boolean isEmailExist(String email);
 	
 	List<Student> findByCourse(Course course);
+	
+	Page<Student> findBySearchName(String search, Pageable pageable);
 }

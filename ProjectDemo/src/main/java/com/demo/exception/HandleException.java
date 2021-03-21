@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.validation.ConstraintViolationException;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,7 +49,15 @@ public class HandleException extends ResponseEntityExceptionHandler{
 			 errorDetails.setFieldErrors(field);
 		 }
 		  
-		 
 		return new ResponseEntity<Object>(errorDetails, HttpStatus.BAD_REQUEST);
 	}
+	
+	//hanlde unique sql
+//	@ExceptionHandler(ConstraintViolationException.class)
+//	protected ResponseEntity<Object> handleConstraintViolation(){
+//		return new ResponseEntity<Object>(null, HttpStatus.BAD_REQUEST);
+//	}
+	
+	
+	
 }

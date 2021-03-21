@@ -24,4 +24,6 @@ public interface CourseService {
 	Page<Course> getAll(Pageable pageable);
 	
 	boolean isExist(String code);
+	
+	Page<Course> findBySearchName(String search, Pageable pageable);
 }

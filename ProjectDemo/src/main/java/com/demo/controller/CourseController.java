@@ -1,10 +1,13 @@
 package com.demo.controller;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,83 +29,119 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.demo.entity.Course;
 import com.demo.entity.Student;
 import com.demo.exception.ApplicationException;
+import com.demo.model.CourseDTO;
 import com.demo.model.Pagination;
-import com.demo.response.ApiResponse;
+import com.demo.response.APIResponse;
 import com.demo.service.CourseService;
 import com.demo.service.StudentService;
+import com.demo.utils.Constant;
 
 @RestController
-@RequestMapping("/api/v1/courses")
-@CrossOrigin("http://localhost:3000")
+@RequestMapping(Constant.API_COURSE)
+@CrossOrigin(Constant.CROSS_ORIGIN)
 public class CourseController {
 
 	@Autowired
 	private StudentService studentService;
 	@Autowired
 	private CourseService courseService;
+	@Autowired
+	private ModelMapper modelMapper;
 	
 	
 	@GetMapping
-	public ResponseEntity<ApiResponse> getAll(@RequestParam(name = "limit") int limit, 
-									@RequestParam(name = "page") int page){
+	public ResponseEntity<APIResponse> getAll(@RequestParam(name = "limit") int limit, 
+									@RequestParam(name = "page") int page,
+									@RequestParam(name = "search") String name){
 		Pageable pageable = 	PageRequest.of(page - 1, limit);
-		Page<Course> courses = courseService.getAll(pageable);
+		Page<Course> courses = courseService.findBySearchName(name, pageable);
 		if(!courses.isEmpty()) {
-			ApiResponse apiResponse = new ApiResponse<List<Course>>(courses.getContent()
+			// convert todto
+			List<CourseDTO> list = courses.getContent().stream()
+												.map(this::convertToDto).collect(Collectors.toList());
+			
+			APIResponse apiResponse = new APIResponse(list
 					,new Pagination(courses.getTotalElements(),page,limit)
 					);
-			return new ResponseEntity<ApiResponse>(apiResponse,HttpStatus.OK);
+			
+			return new ResponseEntity<APIResponse>(apiResponse,HttpStatus.OK);
 		}
-		return new ResponseEntity<ApiResponse>(HttpStatus.NO_CONTENT);
+		return new ResponseEntity<APIResponse>(HttpStatus.NO_CONTENT);
 	}
 	@GetMapping("/{id}")
-	public ResponseEntity<Course> getId(@PathVariable("id") long id){
+	public ResponseEntity<Object> getId(@PathVariable("id") long id){
 		Course course = courseService.findById(id);
 		if(course == null) {
 			throw new ApplicationException("Course not found exception with id : "+id
 					 ,HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<Course>(course,HttpStatus.OK);
+		CourseDTO courseDTO = convertToDto(course);
+		return new ResponseEntity<Object>(courseDTO,HttpStatus.OK);
 	}
 	@PostMapping
-	public ResponseEntity<Course> create(@RequestBody @Valid Course course){
-		if(course.getCode() != null) {
-			boolean check = courseService.isExist(course.getCode());
+	public ResponseEntity<Object> create(@RequestBody @Valid CourseDTO requestCourseDTO){
+		if(requestCourseDTO.getCode() != null) {
+			boolean check = courseService.isExist(requestCourseDTO.getCode());
 			if(check) {
 				throw new ApplicationException("Invalid code",HttpStatus.CONFLICT);
 			}
-		}	
-		course = courseService.save(course);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-				.buildAndExpand(course.getId()).toUri();
-		return ResponseEntity.created(uri).body(course);
+		}
+		try {
+			
+			Course	course = convertToEntity(requestCourseDTO);
+			course = courseService.save(course);
+			CourseDTO	courseDTO = convertToDto(course);
+			URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(course.getId())
+					.toUri();
+			return ResponseEntity.created(uri).body(courseDTO);
+		} catch (Exception e) {
+			// TODO: handle exception
+			throw new ApplicationException("Create failed",HttpStatus.CONFLICT);
+		}
 	}
 	@PutMapping
-	public ResponseEntity<Course> update(@RequestBody @Valid Course requestCourse){
-		Course course = courseService.findById(requestCourse.getId());
-		if(course == null) {
-			throw new ApplicationException("Course not found exception with id : "+
-						requestCourse.getId(),HttpStatus.NOT_FOUND);
+	public ResponseEntity<Object> update(@RequestBody @Valid CourseDTO requestCourse){
+		if(requestCourse.getId() == null){
+			throw new ApplicationException("Course not found exception ",HttpStatus.NOT_FOUND);
 		}else {
-			// check xem code đã tồn tại trong database chưa.
-			// nếu tồn tại thì check xem nó có phải bằng thằng mình muốn udpate
-			boolean check = courseService.isExist(requestCourse.getCode());
-			if(check && !requestCourse.getCode().equals(course.getCode())) {
-				throw new ApplicationException("Invalid code",HttpStatus.CONFLICT);	 
+			Course course = courseService.findById(requestCourse.getId());
+			if(course == null) {
+				throw new ApplicationException("Course not found exception with id : "+
+							requestCourse.getId(),HttpStatus.NOT_FOUND);
+			}else {
+				// check xem code đã tồn tại trong database chưa.
+				// nếu tồn tại thì check xem nó có phải bằng thằng mình muốn udpate
+				boolean check = courseService.isExist(requestCourse.getCode());
+				if(check && !requestCourse.getCode().equals(course.getCode())) {
+					throw new ApplicationException("Invalid code",HttpStatus.CONFLICT);	 
+				}
+				if(requestCourse.getName() != null) {
+					course.setName(requestCourse.getName());
+				}
+				if(requestCourse.getCode() != null) {
+					course.setCode(requestCourse.getCode());
+				}
+				if(requestCourse.getDescription() != null) {
+					course.setDescription(requestCourse.getDescription());
+				}
+				if(requestCourse.getListStudent() != null) {
+					List<Student> students = new ArrayList<Student>();
+					for(Long item : requestCourse.getListStudent()) {
+						Student student = studentService.findById(item);
+						students.add(student);
+					}
+					course.setStudents(students);
+				}
+				try {
+					course = courseService.save(course);
+					CourseDTO courseDTO = convertToDto(course);
+					return new ResponseEntity<Object>(courseDTO,HttpStatus.OK);
+				} catch (Exception e) {
+					throw new ApplicationException("Update faield",HttpStatus.INTERNAL_SERVER_ERROR);	 
+				} 
 			}
-			if(requestCourse.getName() != null) {
-				course.setName(requestCourse.getName());
-			}
-			if(requestCourse.getCode() != null) {
-				course.setCode(requestCourse.getCode());
-			}
-			if(requestCourse.getDescription() != null) {
-				course.setDescription(requestCourse.getDescription());
-			}
-			course = courseService.save(course);
-			return new ResponseEntity<Course>(course,HttpStatus.OK);
-			 
 		}
+		 
 	}
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteById(@PathVariable("id") long id){
@@ -116,18 +155,43 @@ public class CourseController {
 	}
 	
 	/// get student by course
-	@GetMapping("/{courseId}/students")
-	public ResponseEntity<List<Student>> getStudentByCourseId(@PathVariable("courseId") long courseId){
-		Course course = courseService.findById(courseId);
-		if(course == null) {
-			throw new ApplicationException("Course not found exception with id : "+courseId
-					 ,HttpStatus.NOT_FOUND);
+//	@GetMapping("/{courseId}/students")
+//	public ResponseEntity<List<Student>> getStudentByCourseId(@PathVariable("courseId") long courseId){
+//		Course course = courseService.findById(courseId);
+//		if(course == null) {
+//			throw new ApplicationException("Course not found exception with id : "+courseId
+//					 ,HttpStatus.NOT_FOUND);
+//		}
+//		List<Student> students = studentService.findByCourse(course);
+//		if(students.isEmpty()) {
+//			return new ResponseEntity<List<Student>>(HttpStatus.NO_CONTENT);
+//		}
+//		return new ResponseEntity<List<Student>>(students,HttpStatus.OK);
+//	}
+	
+	public CourseDTO convertToDto(Course course) {
+		CourseDTO courseDTO = modelMapper.map(course, CourseDTO.class);
+		if(course.getStudents() != null) {
+			 
+			Long[] students =  course.getStudents().stream()
+												.map(item -> item.getId())
+												.collect(Collectors.toList())
+												.toArray(new Long[course.getStudents().size()]);
+			courseDTO.setListStudent(students);
 		}
-		List<Student> students = studentService.findByCourse(course);
-		if(students.isEmpty()) {
-			return new ResponseEntity<List<Student>>(HttpStatus.NO_CONTENT);
+		return courseDTO;
+	}
+	public Course convertToEntity(CourseDTO courseDTO) {
+		Course course = modelMapper.map(courseDTO, Course.class);
+		if(courseDTO.getListStudent() != null) {
+			List<Student> students = new ArrayList<Student>();
+			for(Long item : courseDTO.getListStudent()) {
+				Student student = studentService.findById(item);
+				students.add(student);
+			}
+			course.setStudents(students);
 		}
-		return new ResponseEntity<List<Student>>(students,HttpStatus.OK);
+		return course;
 	}
  
 }

@@ -1,4 +1,4 @@
-import {SET_FORM_COURSE } from '../../common/Constant'
+import { SET_FORM_COURSE } from '../../../common/Constant'
 const initalValue = {
     visible: false,
     form: {

@@ -1,155 +1,185 @@
 import React, { useState } from 'react';
+import { Table,Space, Popconfirm, Form } from 'antd';
+import {useDispatch,useSelector} from 'react-redux'
+import EditableCell from './EditableCell'
+import { Button } from "reactstrap";
 import PropTypes from 'prop-types';
-import { useSortBy, useTable } from 'react-table'
-import studentApi from '../../api/studentApi';
-import { Table,Button } from 'reactstrap';
-import Dialog from 'rc-dialog';
-import 'bootstrap/dist/css/bootstrap.css';
-import 'rc-dialog/assets/bootstrap.css';
-import { useSelector } from 'react-redux'
 
-import { setStudent,setFormStudent } from '../../action/action'
-import store from '../../reducer/index'
+import {defaultFilter} from '../../common/utils';
+import {fetchStudentRequest} from '../../redux/action/studentAction'
+import {ADD_EVENT} from '../../common/Constant'
 
+import {
+  addStudent,
+  deleteStudent,
+  updateStudent
+  } from '../../redux/action/studentAction'
 
- 
-
-function TableStudent(props) {
-    const {data,handleDeleteItem} = props;
-    console.log("table render....")
-    const [dialogDelete , setDialogDelete] = useState({
-        visible:  false,
-        id : 0
-    })
+TableStudent.propTypes = {
+  pagination : PropTypes.object
   
-
-    const [columns,setColumns] = useState(()=>{
-        return  [
-            {
-                Header : 'Id',
-                accessor: 'id'
-            },{
-                Header : 'Name',
-                accessor: 'name'
-            },{
-                Header : 'Code',
-                accessor: 'code'
-            }
-            ,{
-                Header : 'Email',
-                accessor: 'email'
-            }
-            ,{
-                Header : 'Address',
-                accessor: 'address'
-            },{
-                Header : ' + ',
-                Cell: (value) => ([
-                    <Button color="warning" onClick={()=>
-                        handleButtonEdit(value.row)}>Edit</Button>,
-                    <Button color="danger" onClick={()=>
-                        deleteButton(value.row)}>Delete</Button>
-                ])
-            }
-        ]
-    })
-
-    function handleButtonEdit(value){
-        const fetch =  async () => {
-            const { id } = value.values;
-            const data = await studentApi.getById(id);
-            store.dispatch(setFormStudent({form : {
-                ...data
-            } ,visible: true}));
-        }
-        fetch();
-    }
-    function deleteButton(value){
-        const { id } = value.values;
-        setDialogDelete({...dialogDelete,visible : true , id : id})
-    }
-    function onClose(){
-        setDialogDelete({...dialogDelete,visible : false , id : 0})
-    }
-    function onOkDelete(){
-        handleDeleteItem(dialogDelete.id);
-        setDialogDelete({...dialogDelete,visible : false , id : 0})
-    }
-    const { 
-        getTableProps,
-        getTableBodyProps,
-        headerGroups,
-        rows,
-        prepareRow
-            } = useTable({
-                columns,
-                data
-            },
-            useSortBy)
-             
-    return (
-        <div>
-            <Dialog
-                style={{ width: 600, height : 1000 }}
-                title={<div>Delete</div>}
-                onClose={onClose}
-                visible={dialogDelete.visible}
-                animation="slide-fade"
-                footer={[
-                    <Button key="1" color="success" onClick={onOkDelete} >Ok</Button>,
-                    <Button key="2" color="danger"  onClick={onClose} >Close</Button>
-                ]}
-                >
-                    Bạn có chắc chắn muốn xóa ?
-                </Dialog>
-            <Table  className="table table-bordered border-primary" {...getTableProps()}>
-                <thead>
-                    {
-                        headerGroups.map( (headerGroup,idx) => (
-                            <tr key={idx} {...headerGroup.getHeaderGroupProps()}>
-                                {
-                                    headerGroup.headers.map( header => (
-                                        <th {...header.getHeaderProps(header.getSortByToggleProps())}>
-                                            {
-                                                header.render('Header')
-                                            }
-                                            <span>
-                                                {header.isSorted
-                                                ? header.isSortedDesc
-                                                    ? ' 🔽'
-                                                    : ' 🔼'
-                                                : ''}
-                                            </span>
-                                        </th>
-                                    ))
-                                }
-                            </tr>
-                        ))
-                    }
-                </thead>
-                <tbody {...getTableBodyProps()}>
-                    {
-                        rows.map( (row,idx) => {
-                            prepareRow(row);
-                            return (
-                                <tr key={row.id} {...row.getRowProps}>
-                                    {
-                                        row.cells.map( cell => (
-                                            <td key={cell.id} {...cell.getCellProps()}>
-                                                {
-                                                    cell.render('Cell')
-                                                }
-                                            </td>
-                                        ))
-                                    }
-                                </tr>
-                            )
-                        })
-                    }
-                </tbody>
-            </Table>
-        </div>
-    );
+};
+TableStudent.defaultProps = {
+  pagination : {
+    totalRows: 0,
+    limit: 10,
+    page : 1
+  }
 }
 
-export default TableStudent;
+function TableStudent({data,pagination,handlePagination}){
+  const [form] = Form.useForm();
+  const {totalRows,limit,page} = pagination ;
+  const [editingKey, setEditingKey] = useState('');
+  const dispatch = useDispatch();
+  
+  
+  const {isAdd} = useSelector(state => state.app)
+
+  const isEditing = (record) => record.id === editingKey;
+
+  const {error} = useSelector(state=> state.student)
+
+  if(isAdd && editingKey === ''){
+    form.setFieldsValue({
+      id:'',
+      name: '',
+      code: '',
+      address: '',
+      email: ''
+    })
+  }
+  const edit = (record) => {
+    form.setFieldsValue({
+      ...record,
+    });
+    setEditingKey(record.id);
+    dispatch({type: ADD_EVENT, payload: true})
+  };
+
+  
+  const cancel = () => {
+    setEditingKey('');
+    dispatch(fetchStudentRequest(defaultFilter));
+    dispatch({type: ADD_EVENT, payload: false})
+  };
+  function handleDeleteEmp(id){
+    dispatch(deleteStudent(id));
+  }
+  const save = async (record) => {
+    const row = await form.validateFields();
+    if(record.id){
+        row.id = record.id;
+        dispatch(updateStudent(row))
+    }else{
+        dispatch(addStudent(row));
+    }
+    setEditingKey('');
+    dispatch({type: ADD_EVENT, payload: false})
+}
+
+  const columns = [
+    {
+        title: 'Id',
+        dataIndex : 'id',
+        key : 'id'
+    },{
+        title: 'Name',
+        dataIndex : 'name',
+        key : 'name',
+        editable : true
+    },{
+        title: 'Code',
+        dataIndex : 'code',
+        key : 'code',
+        editable : true
+    },{
+        title: 'Email',
+        dataIndex : 'email',
+        key : 'email',
+        editable : true
+    },{
+        title: 'Address',
+        dataIndex : 'address',
+        key : 'address',
+        editable : true
+    },{
+        title : 'Action',
+        dataIndex: 'action',
+        render : (_,record) => {
+            const editable = isEditing(record);
+            return editable ? (
+                <span>
+                    <a href="#" 
+                        style={{
+                        marginRight: 8,
+                    }}
+                     onClick={() => save(record)}
+                     >Save</a>
+                    <Popconfirm title="Sure to cancel" onConfirm={cancel}>
+                        <a href="#">Cancel</a>
+                    </Popconfirm>
+                </span>
+            ) :  (
+                <Space>
+                    <Popconfirm title="Sure to delete ?" onConfirm={() => handleDeleteEmp(record.id) }>
+                        <Button key={record.id} color="danger" style={{
+                        fontFamily : '-moz-initial',
+                        padding : '6px 20px 6px 20px'
+                    }}>Delete</Button>
+                    </Popconfirm>
+                    <Button color="warning" disabled={editingKey !== '' || isAdd } 
+                            key={record.id} onClick={()=> edit(record)} 
+                            style={{
+                              fontFamily : '-moz-initial',
+                              padding : '6px 20px 6px 20px'
+                          }}
+                        >
+                            Edit
+                    </Button>
+                </Space>
+            )
+        }
+    }
+]
+  const mergedColumns = columns.map((col) => {
+    if (!col.editable) {
+      return col;
+    }
+    return {
+      ...col,
+      onCell: (record) => ({
+        record,
+        dataIndex: col.dataIndex,
+        title: col.title,
+        editing: isEditing(record),
+      }),
+    };
+  });
+
+ 
+  return (
+    <div>
+      <Form  form={form} component={false} validateTrigger={true}>
+        <Table
+            columns={mergedColumns}  
+            dataSource={data}
+            pagination={{
+                pageSize : limit,
+                total: totalRows,
+                current : page,
+                onChange :  handlePagination,
+            }}
+            components={{body : {
+                cell : EditableCell
+            }}}
+            bordered ={true}
+            className="table table-bordered border-primary"
+            size="middle"
+        />
+      </Form>
+    </div>
+  );
+};
+
+export default TableStudent

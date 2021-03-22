@@ -9,8 +9,8 @@ import Dialog from 'rc-dialog';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'rc-dialog/assets/bootstrap.css';
 
-import {setCourse,setFormCourse} from '../../action/action'
-import store from '../../reducer/index'
+import {setCourse,setFormCourse} from '../../redux/action/courseAction'
+import store from '../../redux/reducer/index'
 
  
 function TableCourse(props) {

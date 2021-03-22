@@ -1,7 +1,7 @@
   
 import axios from 'axios';
 import queryString from 'query-string';
-
+import {openNotificationError} from '../common/utils'
 
 const axiosClient = axios.create({
     baseURL:  "http://localhost:8080",  //process.env.REACT_APP_API_URL,
@@ -15,15 +15,33 @@ axiosClient.interceptors.request.use(async (config) => {
         // Handle token here ...
         return config;
 })
-axiosClient.interceptors.response.use((response) => {
+axiosClient.interceptors.response.use((response) => { ///check code
     if (response && response.data) {
         return response.data;
     }
         return response;
     }, (error) => {
     // Handle errors
-        throw error;
-});
+        if(error.response.data.fieldErrors){
+            let description = ''
+            const fieldErrors = error.response.data.fieldErrors;
+            for(let item  in fieldErrors){
+                description += `${item} : ${fieldErrors[item]}`
+            }      
+            openNotificationError(
+                error.response.data.message,
+                description
+            )
+        }else{
+            openNotificationError(
+                "Error",
+                error.response.data.message
+            )
+        }
+    throw error;
+    }
+);
+ 
 // axiosClient.defaults.headers = {
 //     'Cache-Control': 'no-cache',
 //     'Pragma': 'no-cache',

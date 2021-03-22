@@ -21,6 +21,7 @@ public class StudentDTO {
 	@Size(max = 12,min = 6 ,message = "Length must be between 6 and 12" )
 	private String codeStudent;
 	
+	@NotBlank(message = "Your input is required")
 	private String address;
 	
 	@NotBlank(message = "Your input is required")

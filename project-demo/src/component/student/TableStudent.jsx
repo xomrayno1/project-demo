@@ -12,12 +12,7 @@ import { setStudent,setFormStudent } from '../../action/action'
 import store from '../../reducer/index'
 
 
-TableStudent.propTypes = {
  
-};
-TableStudent.defaultProps = {
- 
-}
 
 function TableStudent(props) {
     const {data,handleDeleteItem} = props;
@@ -96,7 +91,7 @@ function TableStudent(props) {
         <div>
             <Dialog
                 style={{ width: 600, height : 1000 }}
-                title={<div>Save</div>}
+                title={<div>Delete</div>}
                 onClose={onClose}
                 visible={dialogDelete.visible}
                 animation="slide-fade"

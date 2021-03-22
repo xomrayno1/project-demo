@@ -6,7 +6,7 @@ import Header from './component/layout/Header';
 import Footer from './component/layout/Footer';
 import Login from './component/authentication/Login';
  
-import {useEffect, useState} from 'react';
+import {  useState} from 'react';
 
 import {
   BrowserRouter as Router,
@@ -20,7 +20,7 @@ import AuthenticationRoute from './component/layout/AuthenticationRoute';
 
 
 function App() {
-  // const user = { name: 'Tania', loggedIn: false }
+
   const [user,setUser] = useState({
     username: '',
     password: '',

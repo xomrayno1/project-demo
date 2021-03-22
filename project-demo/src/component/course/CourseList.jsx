@@ -1,5 +1,4 @@
-import React, {useEffect, useState,useContext} from 'react';
-import PropTypes from 'prop-types';
+import React, {useEffect} from 'react';
 import { Button } from 'reactstrap'
 import {useSelector} from 'react-redux'
 
@@ -8,24 +7,15 @@ import coursesApi from '../../api/courseApi';
 import FormDialogCourse from './FormDialogCourse';
 import courseApi from '../../api/courseApi';
 import {setCourse,setFormCourse} from '../../action/action'
-import store from '../../reducer/index'
-import UserContext from '../../common/UseContext'
+import store from '../../reducer/index';
+
  
-CourseList.propTypes = {
-    
-};
-
 function CourseList(props) {
-     
-
-   
 
     console.log("course render ...")
      
-    const courses = useSelector(state =>
-                         state.courseReducer.course);
-    const formDialog = useSelector(state =>
-                         state.formCourse);
+    const courses = useSelector(state => state.courseReducer.course);
+    const formDialog = useSelector(state => state.formCourse);
         
     const fetch = async () => {
         const response = await coursesApi.getAll({limit: 10, page: 1});
@@ -33,7 +23,6 @@ function CourseList(props) {
         store.dispatch(setCourse(data));
     }
     useEffect( () => {
-        console.log("userEffect");
         fetch();
     },[])
     async function handleSaveCourse(forms){
@@ -65,12 +54,7 @@ function CourseList(props) {
     
     }
    
-    function handleEditForm(formValue) {
-        store.dispatch(setFormCourse({
-            visible: true, form: { ...formValue }
-        }))  
  
-    }
     async function handleDeleteItem(id){
         await courseApi.deleteById(id);
         fetch();
@@ -82,7 +66,6 @@ function CourseList(props) {
             <Button color="success"   outline style={{marginBottom : '10px'}} 
                                 onClick={ () => handleButtonAdd(true)}> Add</Button>
             <TableCourse data={courses} 
-                handleEditForm={handleEditForm}
                 handleDeleteItem={handleDeleteItem}
             />
             <FormDialogCourse
@@ -90,7 +73,7 @@ function CourseList(props) {
                 handleVisibleOnClick={handleVisibleOnClick}
                 visible={formDialog.visible}
                 formDialog={formDialog.form}
-                />
+            />
         </div>
     );
 }

@@ -1,5 +1,9 @@
 import {
-    GET_STUDENTS_REQUEST
+        GET_STUDENTS_REQUEST,
+        ADD_STUDENT,
+        UPDATE_STUDENT,
+        DELETE_STUDENT,
+        ADD_ROW_STUDENT
     }
     from '../../common/Constant'
 
@@ -9,5 +13,28 @@ export const fetchStudentRequest = (data) => {
         payload : data 
     }
 }
-
+export const addStudent = (data) => {
+    return {
+        type : ADD_STUDENT,
+        payload : data
+    }
+}
+export const deleteStudent = (data) => {
+    return {
+        type : DELETE_STUDENT,
+        payload : data
+    }
+}
+export const updateStudent = (data) => {
+    return {
+        type : UPDATE_STUDENT,
+        payload : data
+    }
+}
+export const addRowStudent = (data) => {
+    return {
+        type : ADD_ROW_STUDENT,
+        payload : data
+    }
+}
  

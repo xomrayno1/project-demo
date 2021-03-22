@@ -21,8 +21,7 @@ const studentApi = {
     },
     update:   (params) => {
         const url = '/api/v1/students';
-         
-        return axiosClient.put(url, params);;
+        return axiosClient.put(url, params);
     },
 }
 export default studentApi;

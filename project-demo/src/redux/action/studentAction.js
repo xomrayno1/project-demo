@@ -3,7 +3,8 @@ import {
         ADD_STUDENT,
         UPDATE_STUDENT,
         DELETE_STUDENT,
-        ADD_ROW_STUDENT
+        ADD_ROW_STUDENT,
+        GET_STUDENT_DETAIL_REQUEST
     }
     from '../../common/Constant'
 
@@ -34,6 +35,12 @@ export const updateStudent = (data) => {
 export const addRowStudent = (data) => {
     return {
         type : ADD_ROW_STUDENT,
+        payload : data
+    }
+}
+export const fetchStudentDetail = (data) => {
+    return {
+        type : GET_STUDENT_DETAIL_REQUEST,
         payload : data
     }
 }

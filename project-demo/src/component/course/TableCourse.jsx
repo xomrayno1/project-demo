@@ -10,17 +10,24 @@ import {Table,Space,Tag} from 'antd';
  
 TableCourse.propsTypes = {
     pagination : PropTypes.object,
-    handleEditItem : PropTypes.func
+    handleEditItem : PropTypes.func,
+    handleDeleteItem : PropTypes.func
 }
 TableCourse.defaultProps = {
     pagination : {
         ...defaultFilter
     },
-    handleEditItem: null
+    handleEditItem: null,
+    handleDeleteItem: null
 }
  
-function TableCourse({data,pagination,handlePagination,handleEditItem}) {
-    const {totalRows, limit, page} = pagination
+function TableCourse({data,pagination,handlePagination,handleEditItem,handleDeleteItem}) {
+    const {totalRows, limit, page} = pagination;
+    const [visible, setVisible] = useState(false);
+    const [deleteDialog,setDeleteDialog] = useState({
+                                        visible : false,
+                                        id : 0
+                                    })
     const columns = [
         {
             title : 'Id',
@@ -62,7 +69,9 @@ function TableCourse({data,pagination,handlePagination,handleEditItem}) {
                         <Button key={record.id} color="danger" style={{
                             fontFamily : '-moz-initial',
                             padding : '6px 20px 6px 20px'
-                        }}>Delete</Button>
+                            }}
+                            onClick={() => onDelete(record)}
+                        >Delete</Button>
                         <Button color="warning"  
                                 key={record.id} 
                                 style={{
@@ -85,6 +94,27 @@ function TableCourse({data,pagination,handlePagination,handleEditItem}) {
             form : form
         });
     }
+    function onCloseDialog(){
+        setDeleteDialog({
+            ...deleteDialog,
+            visible : false,
+        })
+    }
+    function onDelete({id}){
+        setDeleteDialog({
+            visible : true,
+            id : id
+        })
+    }
+    function onSaveDelete(){
+        if(!handleDeleteItem){return}
+        const {id} = deleteDialog;
+        handleDeleteItem(id);
+        setDeleteDialog({
+            visible : false,
+            id : 0
+        })
+    }
     return (
         <div>
             <Table
@@ -100,6 +130,30 @@ function TableCourse({data,pagination,handlePagination,handleEditItem}) {
                 className="table table-bordered border-primary"
                 size="middle"
             />
+            <Dialog
+                style={{ width: 600 }}
+                title={<div style={{
+                    fontFamily: '-moz-initial',
+                    fontSize : '20px',
+                    textAlign : 'center'
+                }}>Delete</div>}
+                onClose={onCloseDialog}
+                visible={deleteDialog.visible}
+                animation="slide-fade"
+                footer={[
+                    <Button key="1" color="success" type="submit"
+                        onClick={onSaveDelete}
+                        >Ok</Button>,
+                    <Button key="2" color="danger"   form="submitForm"
+                        onClick={onCloseDialog}>Close</Button>
+
+                ]}
+                >
+                   <p style={{
+                       textAlign: 'center',
+                       fontSize: 18
+                   }}> Are you sure delete</p>
+                </Dialog>
         </div>
     );
 }

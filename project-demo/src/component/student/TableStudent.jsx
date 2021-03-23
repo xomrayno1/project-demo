@@ -4,6 +4,7 @@ import {useDispatch,useSelector} from 'react-redux'
 import EditableCell from './EditableCell'
 import { Button } from "reactstrap";
 import PropTypes from 'prop-types';
+import {Link} from 'react-router-dom'
 
 import {defaultFilter} from '../../common/utils';
 import {fetchStudentRequest} from '../../redux/action/studentAction'
@@ -131,6 +132,7 @@ function TableStudent({data,pagination,handlePagination}){
         dataIndex: 'action',
         render : (_,record) => {
             const editable = isEditing(record);
+            const urlEnrol = `/students/enrol/${record.id}`;
             return editable ? (
                 <span>
                     <a href="#" 
@@ -145,10 +147,16 @@ function TableStudent({data,pagination,handlePagination}){
                 </span>
             ) :  (
                 <Space>
-                    <Button style={{
-                        fontFamily : '-moz-initial',
-                        padding : '6px 20px 6px 20px'
-                    }} color="primary">Enrol</Button>
+                     
+                      <Link to={urlEnrol} >
+                        <Button style={{
+                          fontFamily : '-moz-initial',
+                          padding : '6px 20px 6px 20px'
+                          }} color="primary">
+                            Enrol
+                        </Button>
+                      </Link>
+                     
                     <Popconfirm title="Sure to delete ?" onConfirm={() => handleDeleteEmp(record.id) }>
                         <Button key={record.id} color="danger" style={{
                         fontFamily : '-moz-initial',

@@ -17,6 +17,7 @@ import {
 } from "react-router-dom";
 import { UserProvider } from './common/UseContext'
 import AuthenticationRoute from './component/layout/AuthenticationRoute';
+import Enrol from './component/enrol/Enrol';
 
 
 function App() {
@@ -35,7 +36,8 @@ function App() {
           <Header/>
             <Switch>
               <AuthenticationRoute path="/courses"  component={CourseList}/>  
-              <AuthenticationRoute path="/students"  component={StudentList}/>
+              <AuthenticationRoute exact path="/students"  component={StudentList}/>
+              <AuthenticationRoute path="/students/enrol/:id"  component={Enrol}/>
               <Route path="/logout"  component={Login}/> 
               <Route path="/login"  component={Login}/> 
             </Switch>  

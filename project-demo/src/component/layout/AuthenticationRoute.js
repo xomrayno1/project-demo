@@ -11,7 +11,7 @@ function AuthenticationRoute(props) {
     // }else{
     //     return <Route  {...props}/>
     // }
-    return <Route  {...props}/>
+    return <Route    {...props}/>
 }
 
 export default AuthenticationRoute;

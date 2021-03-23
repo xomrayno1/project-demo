@@ -9,7 +9,7 @@ import {Formik,Form,Field,ErrorMessage, useFormik} from 'formik'
 import * as yup from 'yup'
 
 import TableCourse from '../../component/course/TableCourse'
-import {fetchCourseRequest} from '../../redux/action/courseAction'
+import {addCourse, fetchCourseRequest, updateCourse, deleteCourse} from '../../redux/action/courseAction'
 import {defaultFilter} from '../../common/utils'
 import './styles/styles.css' 
 
@@ -97,10 +97,14 @@ function CourseList(props) {
     }
     function submitFormDialog(data){
         console.log("on submitForm")
-        console.log(data)
-
-        /// push to database
-
+         /// push to database
+        if(data.id){
+            dispatch(updateCourse(data));
+            console.log("edit")
+        }else{
+            dispatch(addCourse(data))
+            console.log("add")
+        }
         setFormDialog({
             ...formDialog,
             visible: false,
@@ -122,6 +126,9 @@ function CourseList(props) {
                ...form,
             }
         })
+    }
+    function handleDeleteItem(id){
+        dispatch(deleteCourse(id));
     }
     
     return (
@@ -152,6 +159,7 @@ function CourseList(props) {
                     pagination={pagination} 
                     handlePagination={handlePagination}
                     handleEditItem={handleEditItem}
+                    handleDeleteItem={handleDeleteItem}
                 />
             </Spin>
             <Dialog

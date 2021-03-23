@@ -1,143 +1,105 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Table } from 'reactstrap'
-import {useTable, useSortBy} from 'react-table'
-
+import {defaultFilter} from '../../common/utils'
 import {Button} from 'reactstrap'
-import courseApi from '../../api/courseApi';
+ 
 import Dialog from 'rc-dialog';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'rc-dialog/assets/bootstrap.css';
-
-import {setCourse,setFormCourse} from '../../redux/action/courseAction'
-import store from '../../redux/reducer/index'
-
+import {Table,Space,Tag} from 'antd';
  
-function TableCourse(props) {
-    console.log("table render ...")
-    const { data ,handleDeleteItem} = props;
-    const [dialogDelete , setDialogDelete] = useState({
-        visible:  false,
-        id : 0
-    })
-    const [columns, setColumns] = useState(()=>{
-        return [
-            {
-                Header : 'Id',
-                accessor: 'id'
-            },{
-                Header : 'Name',
-                accessor: 'name'
-            },{
-                Header : 'Code',
-                accessor: 'code'
-            },{
-                Header : 'Description',
-                accessor: 'description'
-            },{
-                Header :  ' + ',
-                Cell : (value) => (
-                    [ <Button color="warning" key={1} 
-                            onClick={() => handleButtonEdit(value.row)}>Edit</Button>,
-                        <Button color="danger" key={2} 
-                            onClick={() => deleteButton(value.row)} >Delete</Button>]
+TableCourse.propsTypes = {
+    pagination : PropTypes.object,
+    handleEditItem : PropTypes.func
+}
+TableCourse.defaultProps = {
+    pagination : {
+        ...defaultFilter
+    },
+    handleEditItem: null
+}
+ 
+function TableCourse({data,pagination,handlePagination,handleEditItem}) {
+    const {totalRows, limit, page} = pagination
+    const columns = [
+        {
+            title : 'Id',
+            dataIndex : 'id',
+            key: 'id'
+        },{
+            title : 'Name',
+            dataIndex : 'name',
+            key: 'name',
+        },{
+            title : 'Code',
+            dataIndex: 'code',
+            key: 'code'
+        },{
+            title: 'Description',
+            dataIndex : 'description',
+            key: 'description'
+        },{
+            title: 'Students',
+            dataIndex : 'students',
+            render : students => (
+                students.map( item => {
+                    return (
+                        <Tag color="red" key={item}>
+                            {item}
+                        </Tag>
+                    )
+                })
+            )
+        },{
+            title : 'Action',
+            dataIndex : 'action',
+            render : (_,record) => {
+                return (    <Space>
+                        {/* <Button style={{
+                            fontFamily : '-moz-initial',
+                            padding : '6px 20px 6px 20px'
+                        }} color="primary">Add Student</Button> */}
+                        <Button key={record.id} color="danger" style={{
+                            fontFamily : '-moz-initial',
+                            padding : '6px 20px 6px 20px'
+                        }}>Delete</Button>
+                        <Button color="warning"  
+                                key={record.id} 
+                                style={{
+                                fontFamily : '-moz-initial',
+                                padding : '6px 20px 6px 20px'
+                            }}
+                            onClick={()=>handleEditOnClick(record)}
+                        >
+                                Edit
+                        </Button>
+                    </Space>
                 )
             }
-        ]
-    })
-    function handleButtonEdit(value){
-        const fetch =  async () => {
-            const { id } = value.values;
-            const data = await courseApi.getById(id);
-            // if(!handleEditForm){return}
-            // handleEditForm({...data})
-            store.dispatch(setFormCourse({form: data, visible: true }))
         }
-        fetch();
+    ]
+    function handleEditOnClick(form){
+        if(!handleEditItem){return}
+        handleEditItem({
+            visible : true,
+            form : form
+        });
     }
-    function deleteButton(value){
-        const { id } = value.values;
-        setDialogDelete({...dialogDelete,visible : true , id : id})
-    }
-    function onClose(){
-        setDialogDelete({...dialogDelete,visible : false , id : 0})
-    }
-    function onOkDelete(){
-        handleDeleteItem(dialogDelete.id);
-        setDialogDelete({...dialogDelete,visible : false , id : 0})
-    }
-    
-    const {
-        getTableProps,
-        getTableBodyProps,
-        rows,
-        prepareRow,
-        headerGroups
-    } = useTable({
-        columns,
-        data
-    },useSortBy)
-   
     return (
         <div>
-            <Dialog
-                style={{ width: 600 }}
-                title={<div>Delete</div>}
-                onClose={onClose}
-                visible={dialogDelete.visible}
-                animation="slide-fade"
-                footer={[
-                    <Button key="1" color="success" onClick={onOkDelete} >Ok</Button>,
-                    <Button key="2" color="danger"  onClick={onClose} >Close</Button>
-
-                ]}
-                >
-                    Bạn có chắc chắn muốn xóa ?
-            </Dialog>
-            <Table  {...getTableProps()}>
-                <thead> 
-                {
-                    headerGroups.map( (headerGroup,idx) => (
-                        <tr key={idx} {...headerGroup.getHeaderGroupProps()}>
-                            {
-                                headerGroup.headers.map( header => (
-                                    <th {...header.getHeaderProps(header.getSortByToggleProps())}>
-                                        {
-                                            header.render('Header')
-                                        }
-                                        <spam>
-                                            {
-                                                header.isSorted ?  header.isSortedDesc ? ' 🔽' : ' 🔼' : ''
-                                            }
-                                        </spam>
-                                    </th>
-                                ))
-                            }
-                        </tr>
-                    ))
-                }
-                </thead>
-                <tbody {...getTableBodyProps()}>
-                    {
-                        rows.map( (row,idx) => {
-                            prepareRow(row);
-                            return (
-                                <tr key={row.id} {...row.getRowProps()}>
-                                    {
-                                        row.cells.map( cell => (
-                                            <td {...cell.getCellProps()}>
-                                                {
-                                                    cell.render('Cell')
-                                                }
-                                            </td>
-                                        ))
-                                    }
-                                </tr>
-                            )
-                        })
-                    }
-                </tbody>
-            </Table>
+            <Table
+                dataSource={data}
+                bordered={true}
+                columns={columns}
+                pagination = {{
+                    total : totalRows,
+                    pageSize : limit,
+                    current : page,
+                    onChange : handlePagination
+                }}
+                className="table table-bordered border-primary"
+                size="middle"
+            />
         </div>
     );
 }

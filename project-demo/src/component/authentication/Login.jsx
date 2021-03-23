@@ -16,7 +16,7 @@ function Login(props) {
   
     const [user,setUser] = useContext(UserContext);
     const history = useHistory();
-    
+    console.log("loggin render")
     function handleSubmit(data){
         if(data){
             if(data.username === 'xomrayno1'){
@@ -56,20 +56,44 @@ function Login(props) {
                                 .trim()
                         })
                     }
+                    validateOnBlur={false}
+                    validateOnChange={false}
                 > 
-                    <Form>
-                        <div>
-                            <label htmlFor="username">Username : </label>
-                            <Field   name="username"   className="form-control"/>
-                                <ErrorMessage name="username"  />
-                        </div>
-                        <div>
-                            <label htmlFor="password">Password : </label>
-                            <Field  name="password" type="password" className="form-control"/>
-                                <ErrorMessage name="password"  />
-                        </div>
-                        <Button color="primary"  type="submit">Login</Button>
-                    </Form>
+                    {
+                        ({errors}) => (
+                        <Form>
+                            <div>
+                                <label htmlFor="username">Username : </label>
+                                <Field   name="username"   className="form-control"/>               
+                                {
+                                    errors.username && <p style={{
+                                        color: 'red',
+                                        textAlign: 'center',
+                                        fontSize : '16px',
+                                        marginTop: '5px',
+                                        marginBottom: '5px'
+                                         
+                                    }}>{errors.username}</p>
+                                }
+                            </div>
+                            <div>
+                                <label htmlFor="password">Password : </label>
+                                <Field  name="password" type="password" className="form-control"/>
+                                {
+                                    errors.password && <p style={{
+                                        color: 'red',
+                                        textAlign: 'center',
+                                        fontSize : '16px',
+                                        marginTop: '5px',
+                                        marginBottom: '5px'
+                                         
+                                    }}>{errors.password}</p>
+                                }   
+                            </div>
+                            <Button color="primary"  type="submit">Login</Button>
+                         </Form>
+                        )
+                    }
                 </Formik>
             </div>
         </div>

@@ -21,7 +21,7 @@ function* fetchStudent({payload}){
         const response = yield call(studentApi.getAll,payload)
         yield put({type : RECEIVE_STUDENT_SUCCESS , payload : response})
     } catch (error) {
-        yield put({type: RECEIVE_STUDENT_FAILED, error : "Fetch error"})
+        yield put({type: RECEIVE_STUDENT_FAILED, payload : error.response.data.message})
     }
 }
 
@@ -31,7 +31,7 @@ function* updateStudent({payload}){
         const response = yield call(studentApi.getAll,{...defaultFilter})
         yield put({type: UPDATE_STUDENT_SUCCESS, payload : response})
     } catch (error) {
-        yield put({type: UPDATE_STUDENT_FAILED, error : "Update failed"})
+        yield put({type: UPDATE_STUDENT_FAILED, payload : error.response.data.message})
     }
 
 }
@@ -41,7 +41,7 @@ function* deleteStudent({payload}){
         const response = yield call(studentApi.getAll,{...defaultFilter})
         yield put({type: DELETE_STUDENT_SUCCESS, payload : response})
     } catch (error) {
-        yield put({type: DELETE_STUDENT_FAILED, error : "Delete failed"})
+        yield put({type: DELETE_STUDENT_FAILED, payload : error.response.data.message})
     }
 }
 function* addStudent({payload}){
@@ -50,7 +50,7 @@ function* addStudent({payload}){
         const response = yield call(studentApi.getAll,{...defaultFilter})
         yield put({type: ADD_STUDENT_SUCCESS, payload : response})
     } catch (error) {
-        yield put({type: ADD_STUDENT_FAILED, error : error.message})
+        yield put({type: ADD_STUDENT_FAILED, payload : error.response.data.message})
     }
 }
 

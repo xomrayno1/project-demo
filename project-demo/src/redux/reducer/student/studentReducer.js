@@ -37,7 +37,7 @@ function studentReducer(state = initalState , action){
             return {
                 ...state,
                 isLoading : false,
-                students : payload
+                students : payload, 
             }
         case ADD_STUDENT_FAILED:            
             return {

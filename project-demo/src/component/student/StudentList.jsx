@@ -10,7 +10,7 @@ import { defaultFilter } from '../../common/utils'
 import './styles/style.css';
 import {
     ADD_EVENT,
-    EDIT_EVENT
+     
 } from '../../common/Constant'
 
 
@@ -43,6 +43,7 @@ function StudentList(props) {
              page : 1
          })
        },400)
+        
     }
     function handlePagination(page){
         setFilter({
@@ -66,7 +67,7 @@ function StudentList(props) {
     
     return (
        <div className="container"> 
-            <h1>Student List</h1>
+            <h1>Students List</h1>
             <div className="row" style={{
                 marginBottom: '20px'
                 }}>

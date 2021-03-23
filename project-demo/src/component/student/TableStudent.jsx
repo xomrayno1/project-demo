@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Table,Space, Popconfirm, Form } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Table,Space, Popconfirm, Form,Tag } from 'antd';
 import {useDispatch,useSelector} from 'react-redux'
 import EditableCell from './EditableCell'
 import { Button } from "reactstrap";
@@ -38,7 +38,11 @@ function TableStudent({data,pagination,handlePagination}){
 
   const isEditing = (record) => record.id === editingKey;
 
-  const {error} = useSelector(state=> state.student)
+  const {error,isLoading} = useSelector(state=> state.student)
+
+  // useEffect(()=>{
+  //   dispatch(fetchStudentRequest({...defaultFilter}));
+  // },[error])
 
   if(isAdd && editingKey === ''){
     form.setFieldsValue({
@@ -69,10 +73,10 @@ function TableStudent({data,pagination,handlePagination}){
   const save = async (record) => {
     const row = await form.validateFields();
     if(record.id){
-        row.id = record.id;
-        dispatch(updateStudent(row))
+      row.id = record.id;
+      dispatch(updateStudent(row))
     }else{
-        dispatch(addStudent(row));
+      dispatch(addStudent(row));
     }
     setEditingKey('');
     dispatch({type: ADD_EVENT, payload: false})
@@ -103,6 +107,25 @@ function TableStudent({data,pagination,handlePagination}){
         dataIndex : 'address',
         key : 'address',
         editable : true
+    }, {
+        title : 'Courses',
+        dataIndex : 'courses',
+        render : courses => {
+            return courses != null ? (
+               <>
+                  {
+                    courses.map(item => (
+                        <Tag color="red" key={item}>
+                            {
+                              item
+                            }
+                        </Tag>
+                      )
+                    ) 
+                  }
+               </>
+            )  : null
+        }
     },{
         title : 'Action',
         dataIndex: 'action',
@@ -122,6 +145,10 @@ function TableStudent({data,pagination,handlePagination}){
                 </span>
             ) :  (
                 <Space>
+                    <Button style={{
+                        fontFamily : '-moz-initial',
+                        padding : '6px 20px 6px 20px'
+                    }} color="primary">Enrol</Button>
                     <Popconfirm title="Sure to delete ?" onConfirm={() => handleDeleteEmp(record.id) }>
                         <Button key={record.id} color="danger" style={{
                         fontFamily : '-moz-initial',

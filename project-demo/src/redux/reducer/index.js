@@ -1,6 +1,6 @@
 import {combineReducers} from 'redux'
 import studentReducer from './student/studentReducer'
-import CourseReducer from './course/CourseReducer'
+import courseReducer from './course/courseReducer'
 import FormReducer from './course/FormCourse'
 import appReducer from './appReducer'
  
@@ -8,7 +8,7 @@ import appReducer from './appReducer'
 const rootReducer = combineReducers({
     student : studentReducer,
     app: appReducer,
-    courseReducer : CourseReducer,
+    course : courseReducer,
     formCourse : FormReducer
 })
  

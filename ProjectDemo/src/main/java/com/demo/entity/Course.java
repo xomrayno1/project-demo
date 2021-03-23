@@ -24,7 +24,7 @@ public class Course   extends BaseEntity{
 	@JoinTable(name = "student_course",
 					joinColumns = @JoinColumn(name="course_id"),
 					inverseJoinColumns = @JoinColumn(name="student_id"))
-	 
+
 	private List<Student> students;
 	
 

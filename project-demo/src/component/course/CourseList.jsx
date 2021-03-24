@@ -20,15 +20,8 @@ function CourseList(props) {
     const {isLoading} = useSelector(state => state.course);
     const {data,pagination} = useSelector(state => state.course.courses);
     const [filter,setFilter] = useState({...defaultFilter})
-    
-    const [formDialog, setFormDialog] = useState({
-        form: {
-            name : '',
-            code : '',
-            description : ''
-        },
-        visible : false
-    })
+    const [visible, setVisible] = useState(false);
+   
 
     console.log("course list render")
     const formik = useFormik({
@@ -77,10 +70,7 @@ function CourseList(props) {
                 description: ''
             }
         });
-        setFormDialog({
-            ...formDialog.form,
-            visible: true
-        })
+        setVisible(true)
     }
     function handlePagination(page){
         setFilter({
@@ -90,10 +80,7 @@ function CourseList(props) {
     }
     function onCloseDialog(){
         console.log("on close")
-        setFormDialog({
-            ...formDialog.form,
-            visible: false
-        })
+        setVisible(false)
     }
     function submitFormDialog(data){
         console.log("on submitForm")
@@ -105,22 +92,11 @@ function CourseList(props) {
             dispatch(addCourse(data))
             console.log("add")
         }
-        setFormDialog({
-            ...formDialog,
-            visible: false,
-        })
+        setVisible(false)
     }
     function handleEditItem(forms){
         const {form, visible} = forms;
-        setFormDialog({
-            ...formDialog,
-            visible: visible,
-            form : {
-                name : form.name,
-                code : form.code,
-                description : form.description
-            }
-        })
+        setVisible(visible);
         formik.resetForm({
             values : {
                ...form,
@@ -170,16 +146,10 @@ function CourseList(props) {
                     textAlign : 'center'
                 }}>Save</div>}
                 onClose={onCloseDialog}
-                // onSubmit={submitFormDialog}
-                visible={formDialog.visible}
+                 
+                visible={visible}
                 animation="slide-fade"
-                // footer={[
-                //     <Button key="1" color="success" type="submit"
-                //         onClick={submitFormDialog} form="submitForm">Save</Button>,
-                //     <Button key="2" color="danger"   form="submitForm"
-                //         onClick={onCloseDialog}>Close</Button>
-
-                // ]}
+               
                 >
                             <form onSubmit={formik.handleSubmit}> 
                                         <div>

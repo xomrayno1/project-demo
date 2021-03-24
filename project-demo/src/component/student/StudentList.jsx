@@ -33,16 +33,26 @@ function StudentList(props) {
 
     
     function handleSearchName(e){
-       if(typingTimeoutRef.current){
-           clearTimeout(typingTimeoutRef.current); 
-       }
-       typingTimeoutRef.current  = setTimeout(()=> {
-         setFilter({
-             ...filter,
-             search : e.target.value,
-             page : 1
-         })
-       },400)
+    //    if(typingTimeoutRef.current){
+    //        clearTimeout(typingTimeoutRef.current); 
+    //    }
+    //    typingTimeoutRef.current  = setTimeout(()=> {
+    //      setFilter({
+    //          ...filter,
+    //          search : e.target.value,
+    //          page : 1
+    //      })
+    //    },400)
+        const search  =  _.debounce(function(){
+            setFilter({
+                ...filter,
+                search : e.target.value,
+                page : 1
+            })
+        },400)
+        search();
+
+        
         
     }
     function handlePagination(page){

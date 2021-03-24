@@ -26,6 +26,7 @@ function Login(props) {
                     password : data.password,
                     loggedIn : true
                 })
+                
                 history.replace("/students")
             }
         }else{

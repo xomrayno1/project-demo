@@ -18,14 +18,16 @@ function Enrol(props) {
     const {isLoading} = useSelector(state => state.course);
     const {courses} = useSelector(state => state.student.students)
     const {students} = useSelector(state => state.student)
-    const dispatch = useDispatch();
-    
-    useEffect(() =>{
-        dispatch(fetchStudentDetail(id));
-    },[courses])
 
+    const [student, setStudent] = useState({}); 
+     
+
+
+    const dispatch = useDispatch();
+ 
 
     useEffect(()=>{
+        dispatch(fetchStudentDetail(id));
         dispatch(fetchCourseRequest({...defaultFilter}));
     },[])
 
@@ -46,7 +48,7 @@ function Enrol(props) {
             <div className="container">
             <Spin spinning={isLoading}>
                 <div className="text-right">
-                    Hello, {students.name}
+                    Hello ,  {students.name}
                 </div>
               { !isLoading && <Formik
                     initialValues={{
@@ -58,7 +60,6 @@ function Enrol(props) {
                     (setFieldValue , values) => (
                         <Form> 
                             <div className=" table-responsive">
-                               
                                         <table  className="table">
                                             <thead>
                                                 <tr>
@@ -91,7 +92,6 @@ function Enrol(props) {
                                                         }
                                                     </tbody>
                                             </table>
-                                    
                                 </div>
                             <div>
                                 <Button color="success"

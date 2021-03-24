@@ -13,14 +13,15 @@ import {
     UPDATE_STUDENT_SUCCESS,
     ADD_ROW_STUDENT,
     GET_STUDENT_DETAIL_REQUEST,
-    UPDATE_ENROL_STUDENT
+ 
     }
     from '../../../common/Constant'
 
 const initalState = {
     students: {},
     isLoading: false,
-    error : ''
+    error : '',
+    
 }
 function studentReducer(state = initalState , action){
     const {type, payload} = action;
@@ -74,11 +75,7 @@ function studentReducer(state = initalState , action){
                 ...state,
                 isLoading : true
             }
-        case UPDATE_ENROL_STUDENT:
-            return {
-                ...state,
-                isLoading : true
-            }
+ 
         case UPDATE_STUDENT_FAILED:            
             return {
                 ...state,

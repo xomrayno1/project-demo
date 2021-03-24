@@ -28,6 +28,10 @@ public class Course   extends BaseEntity{
 	private List<Student> students;
 	
 
+	public Course(Long id) {
+		super();
+		this.id = id;
+	}
 	public Course() {
 		 
 	}

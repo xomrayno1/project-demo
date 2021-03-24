@@ -30,6 +30,7 @@ import com.demo.entity.Course;
 import com.demo.entity.Student;
 import com.demo.exception.ApplicationException;
 import com.demo.exception.ResourceNotFoundException;
+import com.demo.model.Enrol;
 import com.demo.model.Pagination;
 import com.demo.model.StudentDTO;
 import com.demo.response.APIResponse;
@@ -152,8 +153,25 @@ public class StudentController {
 				throw new ApplicationException("Update Failed",HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 			 
+		} 
+	}
+	
+	@PutMapping("/{id}/enrol")
+	public ResponseEntity<StudentDTO> addEnrol(@RequestBody  @Valid Enrol enrol){
+		Student student = studentService.findById(enrol.getStudentId());
+		if(student == null) {
+			throw new ResourceNotFoundException("Student not found exception with id : "+ enrol.getStudentId());
 		}
-		 
+		if(enrol.getCourses() != null) {
+			 List<Course> list = new ArrayList<Course>();
+			 for(Long item : enrol.getCourses()) {
+				 list.add(new Course(item));
+			 }
+			 student.setCourses(list);
+		}
+		student = studentService.save(student);
+		StudentDTO studentDTO =  converToDto(student);
+		return new ResponseEntity<StudentDTO>(studentDTO,HttpStatus.OK);
 	}
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteById(@PathVariable("id") long id){

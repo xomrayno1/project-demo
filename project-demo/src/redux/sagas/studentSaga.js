@@ -12,10 +12,12 @@ import {
     UPDATE_STUDENT_SUCCESS,
     UPDATE_STUDENT_FAILED,
     ADD_STUDENT_FAILED,
-    ADD_STUDENT_SUCCESS
+    ADD_STUDENT_SUCCESS,
+    UPDATE_ENROL_STUDENT
 } from '../../common/Constant'
 import studentApi from '../../api/studentApi'
 import { defaultFilter } from '../../common/utils'
+import { take } from 'lodash-es'
 
 function* fetchStudent({payload}){
     try {
@@ -61,11 +63,21 @@ function* addStudent({payload}){
         yield put({type: ADD_STUDENT_FAILED, payload : error.response.data.message})
     }
 }
+function* updateEnrol({payload}){
+    try {
+        yield call(studentApi.updateEnrol,payload);
+        const response = yield call(studentApi.getAll,{...defaultFilter})
+        yield put({type: UPDATE_STUDENT_SUCCESS, payload : response})
+    } catch (error) {
+        yield put({type: UPDATE_STUDENT_FAILED, payload : error.response.data.message})
+    }
 
+}
 export default function* studentSaga(){
     yield takeEvery(GET_STUDENTS_REQUEST,fetchStudent);
     yield takeEvery(DELETE_STUDENT,deleteStudent);
     yield takeEvery(ADD_STUDENT,addStudent);
     yield takeEvery(UPDATE_STUDENT,updateStudent);
     yield takeEvery(GET_STUDENT_DETAIL_REQUEST,fetchStudentDetail)
+    yield takeEvery(UPDATE_ENROL_STUDENT, updateEnrol)
 }

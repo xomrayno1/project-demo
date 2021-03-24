@@ -23,5 +23,10 @@ const studentApi = {
         const url = '/api/v1/students';
         return axiosClient.put(url, params);
     },
+    updateEnrol : (params)=>{
+        console.log(params)
+        const url = `/api/v1/students/${params.id}/enrol`
+        return axiosClient.put(url,params)
+    }
 }
 export default studentApi;

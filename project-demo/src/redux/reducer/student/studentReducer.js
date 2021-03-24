@@ -12,7 +12,8 @@ import {
     UPDATE_STUDENT_FAILED,
     UPDATE_STUDENT_SUCCESS,
     ADD_ROW_STUDENT,
-    GET_STUDENT_DETAIL_REQUEST
+    GET_STUDENT_DETAIL_REQUEST,
+    UPDATE_ENROL_STUDENT
     }
     from '../../../common/Constant'
 
@@ -69,6 +70,11 @@ function studentReducer(state = initalState , action){
                 students: payload
             }
         case UPDATE_STUDENT:            
+            return {
+                ...state,
+                isLoading : true
+            }
+        case UPDATE_ENROL_STUDENT:
             return {
                 ...state,
                 isLoading : true

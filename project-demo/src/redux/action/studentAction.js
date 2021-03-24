@@ -4,7 +4,8 @@ import {
         UPDATE_STUDENT,
         DELETE_STUDENT,
         ADD_ROW_STUDENT,
-        GET_STUDENT_DETAIL_REQUEST
+        GET_STUDENT_DETAIL_REQUEST,
+        UPDATE_ENROL_STUDENT
     }
     from '../../common/Constant'
 
@@ -29,6 +30,12 @@ export const deleteStudent = (data) => {
 export const updateStudent = (data) => {
     return {
         type : UPDATE_STUDENT,
+        payload : data
+    }
+}
+export const updateEnrol = (data) => {
+    return {
+        type : UPDATE_ENROL_STUDENT,
         payload : data
     }
 }

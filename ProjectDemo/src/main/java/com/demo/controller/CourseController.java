@@ -29,6 +29,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.demo.entity.Course;
 import com.demo.entity.Student;
 import com.demo.exception.ApplicationException;
+import com.demo.model.CodeValidate;
 import com.demo.model.CourseDTO;
 import com.demo.model.Pagination;
 import com.demo.response.APIResponse;
@@ -77,6 +78,25 @@ public class CourseController {
 		}
 		CourseDTO courseDTO = convertToDto(course);
 		return new ResponseEntity<Object>(courseDTO,HttpStatus.OK);
+	}
+	@PostMapping("/validate/code")
+	public ResponseEntity<Integer> getByCode(@RequestBody CodeValidate codeValidate){
+		System.out.println(codeValidate);
+		boolean check = courseService.isExist(codeValidate.getCode());
+		if(check) {
+			if(codeValidate.getId() != null) {
+				Course course = courseService.findById(codeValidate.getId());
+				if(course!= null) {
+					if(course.getCode().equalsIgnoreCase(codeValidate.getCode()) ) {
+						return new ResponseEntity<Integer>(200, HttpStatus.OK);
+					}
+				}
+			}
+			return new ResponseEntity<Integer>(409, HttpStatus.OK);
+			 
+		}else {
+			return new ResponseEntity<Integer>(200, HttpStatus.OK);
+		}
 	}
 	@PostMapping
 	public ResponseEntity<Object> create(@RequestBody @Valid CourseDTO requestCourseDTO){

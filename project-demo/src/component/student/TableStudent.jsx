@@ -39,12 +39,6 @@ function TableStudent({data,pagination,handlePagination}){
 
   const isEditing = (record) => record.id === editingKey;
 
-  const {error,isLoading} = useSelector(state=> state.student)
-
-  // useEffect(()=>{
-  //   dispatch(fetchStudentRequest({...defaultFilter}));
-  // },[error])
-
   if(isAdd && editingKey === ''){
     form.setFieldsValue({
       id:'',
@@ -156,7 +150,6 @@ function TableStudent({data,pagination,handlePagination}){
                             Enrol
                         </Button>
                       </Link>
-                     
                     <Popconfirm title="Sure to delete ?" onConfirm={() => handleDeleteEmp(record.id) }>
                         <Button key={record.id} color="danger" style={{
                         fontFamily : '-moz-initial',

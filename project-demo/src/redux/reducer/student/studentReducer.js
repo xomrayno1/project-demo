@@ -13,7 +13,11 @@ import {
     UPDATE_STUDENT_SUCCESS,
     ADD_ROW_STUDENT,
     GET_STUDENT_DETAIL_REQUEST,
- 
+    UPDATE_ENROL_STUDENT,
+    UPDATE_ENROL_STUDENT_SUCCESS,
+    UPDATE_ENROL_STUDENT_FAILED,
+    GET_STUDENT_DETAIL_REQUEST_FAILED,
+    GET_STUDENT_DETAIL_REQUEST_SUCCESS
     }
     from '../../../common/Constant'
 
@@ -21,6 +25,7 @@ const initalState = {
     students: {},
     isLoading: false,
     error : '',
+    student : {}
     
 }
 function studentReducer(state = initalState , action){
@@ -35,6 +40,35 @@ function studentReducer(state = initalState , action){
             return {
                 ...state,
                 isLoading : true
+            }
+        case GET_STUDENT_DETAIL_REQUEST_SUCCESS:
+            return {
+                ...state,
+                isLoading : false,
+                student : payload
+            }
+        case GET_STUDENT_DETAIL_REQUEST_FAILED:
+            return {
+                ...state,
+                isLoading : false,
+                error : payload
+            }
+        case UPDATE_ENROL_STUDENT:
+            return {
+                ...state,
+                isLoading : true
+            }
+        case UPDATE_ENROL_STUDENT_SUCCESS:
+            return {
+                ...state,
+                isLoading : false,
+                students: payload
+            }
+        case UPDATE_ENROL_STUDENT_FAILED:
+            return {
+                ...state,
+                isLoading : false,
+                error : payload
             } 
         case ADD_STUDENT:            
             return {

@@ -10,7 +10,6 @@ import { defaultFilter } from '../../common/utils'
 import './styles/style.css';
 import {
     ADD_EVENT,
-     
 } from '../../common/Constant'
 
 
@@ -50,10 +49,7 @@ function StudentList(props) {
                 page : 1
             })
         },400)
-        search();
-
-        
-        
+        search();        
     }
     function handlePagination(page){
         setFilter({

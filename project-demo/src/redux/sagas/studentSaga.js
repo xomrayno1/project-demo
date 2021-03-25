@@ -13,11 +13,15 @@ import {
     UPDATE_STUDENT_FAILED,
     ADD_STUDENT_FAILED,
     ADD_STUDENT_SUCCESS,
-    UPDATE_ENROL_STUDENT
+    UPDATE_ENROL_STUDENT,
+    UPDATE_ENROL_STUDENT_SUCCESS,
+    UPDATE_ENROL_STUDENT_FAILED,
+    GET_STUDENT_DETAIL_REQUEST_FAILED,
+    GET_STUDENT_DETAIL_REQUEST_SUCCESS
 } from '../../common/Constant'
 import studentApi from '../../api/studentApi'
 import { defaultFilter } from '../../common/utils'
-import { take } from 'lodash-es'
+
 
 function* fetchStudent({payload}){
     try {
@@ -30,9 +34,9 @@ function* fetchStudent({payload}){
 function* fetchStudentDetail({payload}){
     try {
         const response = yield call(studentApi.getById,payload)
-        yield put({type : RECEIVE_STUDENT_SUCCESS , payload : response})
+        yield put({type : GET_STUDENT_DETAIL_REQUEST_SUCCESS , payload : response})
     } catch (error) {
-        yield put({type: RECEIVE_STUDENT_FAILED, payload : error.response.data.message})
+        yield put({type: GET_STUDENT_DETAIL_REQUEST_FAILED, payload : error.response.data.message})
     }
 }
 function* updateStudent({payload}){
@@ -67,9 +71,9 @@ function* updateEnrol({payload}){
     try {
         yield call(studentApi.updateEnrol,payload);
         const response = yield call(studentApi.getAll,{...defaultFilter})
-        yield put({type: UPDATE_STUDENT_SUCCESS, payload : response})
+        yield put({type: UPDATE_ENROL_STUDENT_SUCCESS, payload : response})
     } catch (error) {
-        yield put({type: UPDATE_STUDENT_FAILED, payload : error.response.data.message})
+        yield put({type: UPDATE_ENROL_STUDENT_FAILED, payload : error.response.data.message})
     }
 
 }

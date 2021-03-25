@@ -5,8 +5,8 @@ import {useSelector,useDispatch} from 'react-redux'
 import Dialog from 'rc-dialog';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'rc-dialog/assets/bootstrap.css';
-import {Formik,Form,Field,ErrorMessage, useFormik} from 'formik'
-import * as yup from 'yup'
+import {useFormik} from 'formik'
+import * as yup from 'yup'  
 
 import TableCourse from '../../component/course/TableCourse'
 import {addCourse, fetchCourseRequest, updateCourse, deleteCourse} from '../../redux/action/courseAction'
@@ -14,13 +14,17 @@ import {defaultFilter} from '../../common/utils'
 import './styles/styles.css' 
 
 import _ from 'lodash'
+import courseApi from '../../api/courseApi';
 
 function CourseList(props) {
     const dispatch = useDispatch();
     const {isLoading} = useSelector(state => state.course);
     const {data,pagination} = useSelector(state => state.course.courses);
     const [filter,setFilter] = useState({...defaultFilter})
-    const [visible, setVisible] = useState(false);
+    const [dialog, setDialog] = useState({
+        id : '',
+        visible : false
+    });
    
 
     console.log("course list render")
@@ -30,23 +34,32 @@ function CourseList(props) {
             code : '',
             description : ''
         },
-        validationSchema : ()=>{
+        validationSchema : () => {
            return  yup.object({
                 name :   yup.string().required("Please input name ! ")
                                     .min(6,"name length must be between 6 to 22")
                                     .max(22,"name length must be between 6 to 22"),
                 code :   yup.string().required("Please input code ! ")
                                     .min(3,"name length must be between 3 to 12")
-                                    .max(12,"name length must be between 3 to 12"),
+                                    .max(12,"name length must be between 3 to 12")
+                                    .test('code','Duplicate field', async value =>   {
+                                        console.log(value)
+                                        const form = {
+                                            code : value,
+                                            id : dialog.id
+                                        }
+                                        const data = await  courseApi.checkCode(form);
+                                        return data === 200 ? true : false
+                                    })
+                                    
             })
         },
         onSubmit: submitFormDialog,
         validateOnBlur : false,
         validateOnChange: false,
     });
-   
-    
-
+ 
+ 
     useEffect(()=>{
         dispatch(fetchCourseRequest(filter));
     },[filter])
@@ -70,7 +83,11 @@ function CourseList(props) {
                 description: ''
             }
         });
-        setVisible(true)
+        setDialog({
+            ...dialog,
+            id : '',
+            visible : true
+        })
     }
     function handlePagination(page){
         setFilter({
@@ -80,7 +97,10 @@ function CourseList(props) {
     }
     function onCloseDialog(){
         console.log("on close")
-        setVisible(false)
+        setDialog({
+            ...dialog,
+            visible : false
+        })
     }
     function submitFormDialog(data){
         console.log("on submitForm")
@@ -92,11 +112,19 @@ function CourseList(props) {
             dispatch(addCourse(data))
             console.log("add")
         }
-        setVisible(false)
+        setDialog({
+            ...dialog,
+            visible : false
+        })
     }
     function handleEditItem(forms){
         const {form, visible} = forms;
-        setVisible(visible);
+        
+        setDialog({
+            ...dialog,
+            visible : visible,
+            id : form.id
+        })
         formik.resetForm({
             values : {
                ...form,
@@ -146,8 +174,7 @@ function CourseList(props) {
                     textAlign : 'center'
                 }}>Save</div>}
                 onClose={onCloseDialog}
-                 
-                visible={visible}
+                visible={dialog.visible}
                 animation="slide-fade"
                
                 >

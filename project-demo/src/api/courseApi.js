@@ -21,5 +21,9 @@ const courseApi = {
         const url = `/api/v1/courses`;
         return axiosClient.put(url, params);
     },
+    checkCode : (params) => {
+        const url = `api/v1/courses/validate/code`
+        return axiosClient.post(url,params);
+    }
 }
 export default courseApi;

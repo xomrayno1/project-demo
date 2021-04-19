@@ -2,7 +2,7 @@ package com.demo.model;
 
 import javax.validation.constraints.NotBlank;
 
-public class Enrol {
+public class EnrolRequest {
 	@NotBlank(message = "Your input is required")
 	private String studentId;
 	private Long[] courses;

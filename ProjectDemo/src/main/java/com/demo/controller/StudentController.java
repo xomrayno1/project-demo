@@ -1,8 +1,9 @@
 package com.demo.controller;
 
-import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -24,13 +25,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.demo.entity.Course;
 import com.demo.entity.Student;
 import com.demo.exception.ApplicationException;
 import com.demo.exception.ResourceNotFoundException;
-import com.demo.model.Enrol;
+import com.demo.model.EnrolRequest;
 import com.demo.model.Pagination;
 import com.demo.model.StudentDTO;
 import com.demo.response.APIResponse;
@@ -82,33 +82,36 @@ public class StudentController {
 		return new ResponseEntity<StudentDTO>(studentDTO,HttpStatus.OK);
 	}
 	@PostMapping
-	public ResponseEntity<StudentDTO> create(@RequestBody @Valid StudentDTO requestStudentDTO){
+	public ResponseEntity<Object> create(@RequestBody @Valid StudentDTO requestStudentDTO){
 		if(requestStudentDTO.getCodeStudent() != null) {
 			boolean isCode = studentService.isCodeExist(requestStudentDTO.getCodeStudent());
 			if(isCode) {
-				throw new ApplicationException("Invalid code",HttpStatus.CONFLICT); // check code invalid
+				throw new ApplicationException("Code is exist",HttpStatus.CONFLICT); // check code exists
 			}
 		}
-		if(requestStudentDTO.getEmail() != null) { //check email invalid
+		if(requestStudentDTO.getEmail() != null) { //check email exists
 			boolean isEmail = studentService.isEmailExist(requestStudentDTO.getEmail());
 			if(isEmail) {
-				throw new ApplicationException("Invalid Email",HttpStatus.CONFLICT);
+				throw new ApplicationException("Code is exist",HttpStatus.CONFLICT);
 			}
 		}
 		try {
 			Student student = convertToEntity(requestStudentDTO);
 			student = studentService.save(student);
 			StudentDTO studentDTO = converToDto(student);
-			URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-					.buildAndExpand(student.getId()).toUri();
-			return ResponseEntity.created(uri).body(studentDTO);
+//			URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+//					.buildAndExpand(student.getId()).toUri();
+//			return ResponseEntity.created(uri).body(studentDTO);
+			Map<String, String>  dataSuccess = new HashMap<>();
+			dataSuccess.put("message", "Create success");
+			return new ResponseEntity<Object>(dataSuccess, HttpStatus.CREATED);
 		} catch (Exception e) {
 			// TODO: handle exception
 			throw new ApplicationException("Create Failed",HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	@PutMapping
-	public ResponseEntity<StudentDTO> update(@RequestBody @Valid  StudentDTO requestStudentDTO){
+	public ResponseEntity<Object> update(@RequestBody @Valid  StudentDTO requestStudentDTO){
 		if(requestStudentDTO.getId() == null) {
 			throw new ApplicationException("Student not found exception  ",HttpStatus.NOT_FOUND);
 		}else {
@@ -119,11 +122,11 @@ public class StudentController {
 			} 
 			boolean isCode = studentService.isCodeExist(requestStudentDTO.getCodeStudent());
 			if(isCode && !student.getCodeStudent().equals(requestStudentDTO.getCodeStudent())) {
-				throw new ApplicationException("Invalid code",HttpStatus.CONFLICT); // check code invalid
+				throw new ApplicationException("Code is exists",HttpStatus.CONFLICT); // check code is exist
 			}
 			boolean isEmail = studentService.isEmailExist(requestStudentDTO.getEmail());
 			if(isEmail && !student.getEmail().equals(requestStudentDTO.getEmail())) {
-				throw new ApplicationException("Invalid email",HttpStatus.CONFLICT); //check email invalid
+				throw new ApplicationException("Code is exists",HttpStatus.CONFLICT); //check email is exist
 			}
 			if(requestStudentDTO.getAddress() != null) {
 				student.setAddress(requestStudentDTO.getAddress());
@@ -147,8 +150,11 @@ public class StudentController {
 			}
 			try {
 				student = studentService.save(student);
-				StudentDTO studentDTO = converToDto(student);
-				return new ResponseEntity<StudentDTO>(studentDTO,HttpStatus.OK);	
+//				StudentDTO studentDTO = converToDto(student);
+////				return new ResponseEntity<StudentDTO>(studentDTO,HttpStatus.OK);
+				Map<String, String>  dataSuccess = new HashMap<>();
+				dataSuccess.put("message", "Update success");
+				return new ResponseEntity<Object>(dataSuccess, HttpStatus.OK);
 			} catch (Exception e) {
 				throw new ApplicationException("Update Failed",HttpStatus.INTERNAL_SERVER_ERROR);
 			}
@@ -157,62 +163,47 @@ public class StudentController {
 	}
 	
 	@PutMapping("/{id}/enrol")
-	public ResponseEntity<StudentDTO> addEnrol(@RequestBody  @Valid Enrol enrol){
+	public ResponseEntity<Object> addEnrol(@RequestBody  @Valid EnrolRequest enrol){
 		Student student = studentService.findById(enrol.getStudentId());
 		if(student == null) {
 			throw new ResourceNotFoundException("Student not found exception with id : "+ enrol.getStudentId());
 		}
-		if(enrol.getCourses() != null) {
-			 List<Course> list = new ArrayList<Course>();
-			 for(Long item : enrol.getCourses()) {
-				 list.add(new Course(item));
-			 }
-			 student.setCourses(list);
+		try {
+			if(enrol.getCourses() != null) {
+				 List<Course> list = new ArrayList<Course>();
+				 for(Long item : enrol.getCourses()) {
+					 list.add(new Course(item));
+				 }
+				 student.setCourses(list);
+			}
+			student = studentService.save(student);
+//			StudentDTO studentDTO =  converToDto(student);
+//			return new ResponseEntity<StudentDTO>(studentDTO,HttpStatus.OK);
+			Map<String, String>  dataSuccess = new HashMap<>();
+			dataSuccess.put("message", "Save success");
+			return new ResponseEntity<Object>(dataSuccess, HttpStatus.OK);
+		}catch(Exception e) {
+			throw new ApplicationException("Save Failed",HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		student = studentService.save(student);
-		StudentDTO studentDTO =  converToDto(student);
-		return new ResponseEntity<StudentDTO>(studentDTO,HttpStatus.OK);
 	}
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteById(@PathVariable("id") long id){
+	public ResponseEntity<Object> deleteById(@PathVariable("id") long id){
 		Student student = studentService.findById(id);
 		if(student == null) {
 			throw new ResourceNotFoundException("Student not found exception with id : "+ id);
 		}
-		studentService.delete(student);
-		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+		try {
+			studentService.delete(student);
+			Map<String, String>  dataSuccess = new HashMap<>();
+			dataSuccess.put("message", "Delete success");
+			return new ResponseEntity<Object>(dataSuccess, HttpStatus.OK);
+		} catch (Exception e) {
+			throw new ApplicationException("Delete Failed",HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+//		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 	}
 	
-	/// get courses from student
-//	@GetMapping("/{studentId}/courses")
-//	public ResponseEntity<List<Course>> getCourseByStudentId(@PathVariable("studentId") long studentId){
-//		Student student = studentService.findById(studentId);
-//		if(student == null) {
-//			throw new ApplicationException("Student not found exception with id : "+ 
-//					studentId,HttpStatus.NOT_FOUND);
-//		}
-//		List<Course> courses = courseService.findByStudent(student);
-//		if(courses.isEmpty()) {
-//			return new ResponseEntity<List<Course>>(HttpStatus.NO_CONTENT);
-//		}
-//		return new ResponseEntity<List<Course>>(courses,HttpStatus.OK);
-//	}
-//	@GetMapping("/{studentId}/courses/{courseId}")
-//	public ResponseEntity<Course> getCourseByStudentIdCourseId(@PathVariable("studentId") long studentId,
-//			@PathVariable("courseId") long courseId){
-//		Student student = studentService.findById(studentId);
-//		if(student == null) {
-//			throw new ResourceNotFoundException("Student not found exception with id : "+ studentId);
-//		}
-//		Course courses = courseService.findByIdAndStudent(courseId, student);
-//		if(courses == null) {
-//			throw new ApplicationException("Not found exception with courseId : "+ courseId +
-//					" studentId"+ studentId,HttpStatus.NOT_FOUND);
-//		}
-//		
-//		return new ResponseEntity<Course>(courses,HttpStatus.OK);
-//	}
-	
+  
 	//conver to dto
 	private StudentDTO converToDto(Student student) {
 		StudentDTO studentDTO = modelMapper.map(student, StudentDTO.class);

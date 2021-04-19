@@ -1,8 +1,9 @@
 package com.demo.controller;
 
-import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -24,12 +25,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.demo.entity.Course;
 import com.demo.entity.Student;
 import com.demo.exception.ApplicationException;
-import com.demo.model.CodeValidate;
 import com.demo.model.CourseDTO;
 import com.demo.model.Pagination;
 import com.demo.response.APIResponse;
@@ -79,41 +78,26 @@ public class CourseController {
 		CourseDTO courseDTO = convertToDto(course);
 		return new ResponseEntity<Object>(courseDTO,HttpStatus.OK);
 	}
-	@PostMapping("/validate/code")
-	public ResponseEntity<Integer> getByCode(@RequestBody CodeValidate codeValidate){
-		System.out.println(codeValidate);
-		boolean check = courseService.isExist(codeValidate.getCode());
-		if(check) {
-			if(codeValidate.getId() != null) {
-				Course course = courseService.findById(codeValidate.getId());
-				if(course!= null) {
-					if(course.getCode().equalsIgnoreCase(codeValidate.getCode()) ) {
-						return new ResponseEntity<Integer>(200, HttpStatus.OK);
-					}
-				}
-			}
-			return new ResponseEntity<Integer>(409, HttpStatus.OK);
-			 
-		}else {
-			return new ResponseEntity<Integer>(200, HttpStatus.OK);
-		}
-	}
+ 
 	@PostMapping
 	public ResponseEntity<Object> create(@RequestBody @Valid CourseDTO requestCourseDTO){
 		if(requestCourseDTO.getCode() != null) {
 			boolean check = courseService.isExist(requestCourseDTO.getCode());
 			if(check) {
-				throw new ApplicationException("Invalid code",HttpStatus.CONFLICT);
+				throw new ApplicationException("Code is exists",HttpStatus.CONFLICT);
 			}
 		}
 		try {
 			
 			Course	course = convertToEntity(requestCourseDTO);
 			course = courseService.save(course);
-			CourseDTO	courseDTO = convertToDto(course);
-			URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(course.getId())
-					.toUri();
-			return ResponseEntity.created(uri).body(courseDTO);
+//			CourseDTO	courseDTO = convertToDto(course);
+//			URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(course.getId())
+//					.toUri();
+//			return ResponseEntity.created(uri).body(courseDTO);
+			Map<String, String>  dataSuccess = new HashMap<>();
+			dataSuccess.put("message", "Create success");
+			return new ResponseEntity<Object>(dataSuccess, HttpStatus.CREATED);
 		} catch (Exception e) {
 			// TODO: handle exception
 			throw new ApplicationException("Create failed",HttpStatus.CONFLICT);
@@ -129,11 +113,9 @@ public class CourseController {
 				throw new ApplicationException("Course not found exception with id : "+
 							requestCourse.getId(),HttpStatus.NOT_FOUND);
 			}else {
-				// check xem code đã tồn tại trong database chưa.
-				// nếu tồn tại thì check xem nó có phải bằng thằng mình muốn udpate
 				boolean check = courseService.isExist(requestCourse.getCode());
 				if(check && !requestCourse.getCode().equals(course.getCode())) {
-					throw new ApplicationException("Invalid code",HttpStatus.CONFLICT);	 
+					throw new ApplicationException("Code is exist",HttpStatus.CONFLICT);	 
 				}
 				if(requestCourse.getName() != null) {
 					course.setName(requestCourse.getName());
@@ -154,8 +136,11 @@ public class CourseController {
 				}
 				try {
 					course = courseService.save(course);
-					CourseDTO courseDTO = convertToDto(course);
-					return new ResponseEntity<Object>(courseDTO,HttpStatus.OK);
+//					CourseDTO courseDTO = convertToDto(course);
+//					return new ResponseEntity<Object>(courseDTO,HttpStatus.OK);
+					Map<String, String>  dataSuccess = new HashMap<>();
+					dataSuccess.put("message", "Update success");
+					return new ResponseEntity<Object>(dataSuccess, HttpStatus.OK);
 				} catch (Exception e) {
 					throw new ApplicationException("Update faield",HttpStatus.INTERNAL_SERVER_ERROR);	 
 				} 
@@ -164,30 +149,19 @@ public class CourseController {
 		 
 	}
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteById(@PathVariable("id") long id){
+	public ResponseEntity<Object> deleteById(@PathVariable("id") long id){
 		Course course = courseService.findById(id);
 		if(course == null) {
 			throw new ApplicationException("Course not found exception with id : "+id
 					 ,HttpStatus.NOT_FOUND);
 		}
 		courseService.delete(course);
-		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+//		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+		Map<String, String>  dataSuccess = new HashMap<>();
+		dataSuccess.put("message", "Delete success");
+		return new ResponseEntity<Object>(dataSuccess, HttpStatus.OK);
 	}
-	
-	/// get student by course
-//	@GetMapping("/{courseId}/students")
-//	public ResponseEntity<List<Student>> getStudentByCourseId(@PathVariable("courseId") long courseId){
-//		Course course = courseService.findById(courseId);
-//		if(course == null) {
-//			throw new ApplicationException("Course not found exception with id : "+courseId
-//					 ,HttpStatus.NOT_FOUND);
-//		}
-//		List<Student> students = studentService.findByCourse(course);
-//		if(students.isEmpty()) {
-//			return new ResponseEntity<List<Student>>(HttpStatus.NO_CONTENT);
-//		}
-//		return new ResponseEntity<List<Student>>(students,HttpStatus.OK);
-//	}
+ 
 	
 	public CourseDTO convertToDto(Course course) {
 		CourseDTO courseDTO = modelMapper.map(course, CourseDTO.class);

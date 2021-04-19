@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.validation.ConstraintViolationException;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +26,14 @@ public class HandleException extends ResponseEntityExceptionHandler{
 		return new ResponseEntity<ErrorDetails>(errorDetails,exception.getStatus());
 	}
 	
+	
+	@ExceptionHandler(ResourceNotFoundException.class)
+	public ResponseEntity<ErrorDetails> handleResourceNotFound(ResourceNotFoundException resource 
+			,WebRequest request){
+		ErrorDetails errorDetails = new ErrorDetails(resource.getMessage(),
+				request.getDescription(false),new Date(),HttpStatus.NOT_FOUND.value());
+		return new ResponseEntity<ErrorDetails>(errorDetails,HttpStatus.NOT_FOUND);
+	}
 	
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,

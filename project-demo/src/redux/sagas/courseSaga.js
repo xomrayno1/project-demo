@@ -1,4 +1,4 @@
-import {takeEvery,put,call} from 'redux-saga/effects'
+import {takeLatest,put,call} from 'redux-saga/effects'
 import courseApi from '../../api/courseApi'
 import {defaultFilter} from '../../common/utils'
 import {
@@ -17,6 +17,8 @@ import {
  
  
 } from '../../common/Constant'
+import {message} from 'antd'
+
 
 function* fetchCourse({payload}){
     try {
@@ -26,29 +28,56 @@ function* fetchCourse({payload}){
         yield put({type : RECEIVE_COURSE_FAILED, payload : error.message})
     }
 }
-function* addCourse({payload}){
+function* addCourse({payload, formCourseRef,onCloseDialog}){
     try {
-        yield call(courseApi.create,payload);
+        const data = yield call(courseApi.create,payload);
         const response = yield  call(courseApi.getAll, {...defaultFilter});
         yield put({type: ADD_COURSE_SUCCESS, payload: response});
+        message.success(data.message)
+        onCloseDialog()
     } catch (error) {
+        validateError(error, formCourseRef)
         yield put({type: ADD_COURSE_FAILED, payload: error.message});
     }
 }
-function* updateCourse({payload}){
+function* updateCourse({payload, formCourseRef, onCloseDialog}){
     try {
-        yield call(courseApi.update,payload);
+        const data = yield call(courseApi.update,payload);
         const response = yield  call(courseApi.getAll, {...defaultFilter});
         yield put({type: UPDATE_COURSE_SUCCESS, payload: response});
+        onCloseDialog && onCloseDialog();
+        message.success(data.message)
     } catch (error) {
+        
+        validateError(error, formCourseRef)
         yield put({type: UPDATE_COURSE_FAILED, payload: error.message});
+    }
+}
+
+function validateError( error, formRef){
+    const status = error.response.data.status;
+    switch(status){
+        case 400:
+            formRef.current.setErrors({
+                ...error.response.data.fieldErrors
+            })
+            break;
+        case 409:
+            formRef.current.setErrors({
+                code : error.response.data.message
+            })
+            break;
+        default: 
+            console.log("error");
+            break;
     }
 }
 function* deleteCourse({payload}){
     try {
-        yield call(courseApi.deleteById,payload);
+        const data = yield call(courseApi.deleteById,payload);
         const response = yield  call(courseApi.getAll, {...defaultFilter});
         yield put({type: DELETE_COURSE_SUCCESS, payload: response});
+        message.success(data.message)
     } catch (error) {
         yield put({type: DELETE_COURSE_FAILED, payload: error.message});
     }
@@ -57,8 +86,8 @@ function* deleteCourse({payload}){
 
 
 export default function* courseSaga(){ //watcher
-   yield takeEvery(GET_COURSES_REQUEST, fetchCourse)
-   yield takeEvery(ADD_COURSE, addCourse)
-   yield takeEvery(UPDATE_COURSE, updateCourse)
-   yield takeEvery(DELETE_COURSE, deleteCourse)
+   yield takeLatest(GET_COURSES_REQUEST, fetchCourse)
+   yield takeLatest(ADD_COURSE, addCourse)
+   yield takeLatest(UPDATE_COURSE, updateCourse)
+   yield takeLatest(DELETE_COURSE, deleteCourse)
 }

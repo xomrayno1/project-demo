@@ -15,10 +15,11 @@ export const fetchStudentRequest = (data) => {
         payload : data 
     }
 }
-export const addStudent = (data) => {
+export const addStudent = (data, form) => {
     return {
         type : ADD_STUDENT,
-        payload : data
+        payload : data,
+        form
     }
 }
 export const deleteStudent = (data) => {
@@ -27,16 +28,17 @@ export const deleteStudent = (data) => {
         payload : data
     }
 }
-export const updateStudent = (data) => {
+export const updateStudent = (data, form) => {
     return {
         type : UPDATE_STUDENT,
-        payload : data
+        payload : data,
+        form
     }
 }
 export const updateEnrol = (data) => {
     return {
         type : UPDATE_ENROL_STUDENT,
-        payload : data
+        payload : data,
     }
 }
 export const addRowStudent = (data) => {

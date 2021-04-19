@@ -30,15 +30,15 @@ const EditableCell = ({
               message: `Please Input ${title}!`,
               whitespace : true
             },
-            dataIndex !== 'code'  ?  { // field diff code length 4- 26
-              min: 4,
-              max : 26,
-              message : `${title} must be between 4 and 26 characters`,
-            } : { // field diff code length 6- 12
-              min: 6,
-              max : 12,
-              message : `${title} must be between 6 and 12 characters`,
-            } ,
+            // dataIndex !== 'code'  ?  { // field diff code length 4- 26
+            //   min: 4,
+            //   max : 26,
+            //   message : `${title} must be between 4 and 26 characters`,
+            // } : { // field diff code length 6- 12
+            //   min: 6,
+            //   max : 12,
+            //   message : `${title} must be between 6 and 12 characters`,
+            // } ,
 
 
           ]}

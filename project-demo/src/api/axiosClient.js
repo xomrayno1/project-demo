@@ -22,22 +22,6 @@ axiosClient.interceptors.response.use((response) => { ///check code
         return response;
     }, (error) => {
     // Handle errors
-        if(error.response.data.fieldErrors){
-            let description = ''
-            const fieldErrors = error.response.data.fieldErrors;
-            for(let item  in fieldErrors){
-                description += `${item} : ${fieldErrors[item]}`
-            }      
-            openNotificationError(
-                error.response.data.message,
-                description
-            )
-        }else{
-            openNotificationError(
-                "Error",
-                error.response.data.message
-            )
-        }
     throw error;
     }
 );

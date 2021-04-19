@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Table,Space, Popconfirm, Form,Tag } from 'antd';
 import {useDispatch,useSelector} from 'react-redux'
 import EditableCell from './EditableCell'
@@ -35,9 +35,12 @@ function TableStudent({data,pagination,handlePagination}){
   const dispatch = useDispatch();
   
   
+  
   const {isAdd} = useSelector(state => state.app)
 
   const isEditing = (record) => record.id === editingKey;
+
+ 
 
   if(isAdd && editingKey === ''){
     form.setFieldsValue({
@@ -69,9 +72,9 @@ function TableStudent({data,pagination,handlePagination}){
     const row = await form.validateFields();
     if(record.id){
       row.id = record.id;
-      dispatch(updateStudent(row))
+      dispatch(updateStudent(row, form))
     }else{
-      dispatch(addStudent(row));
+      dispatch(addStudent(row, form));
     }
     setEditingKey('');
     dispatch({type: ADD_EVENT, payload: false})
@@ -188,7 +191,7 @@ function TableStudent({data,pagination,handlePagination}){
  
   return (
     <div>
-      <Form  form={form} component={false} validateTrigger={true}>
+      <Form  form={form} component={false} validateTrigger={true} >
         <Table
             columns={mergedColumns}  
             dataSource={data}

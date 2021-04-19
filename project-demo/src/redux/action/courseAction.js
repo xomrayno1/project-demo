@@ -1,5 +1,5 @@
 import {
-    
+
     SET_COURSE,
     SET_FORM_COURSE,
     GET_COURSES_REQUEST,
@@ -9,45 +9,49 @@ import {
 }
     from '../../common/Constant'
 
- 
-
-    export const fetchCourseRequest = (data) => {
-        return {
-            type : GET_COURSES_REQUEST,
-            payload : data 
-        }
-    }
-    export const addCourse = (data) => {
-        return {
-            type : ADD_COURSE,
-            payload : data
-        }
-    }
-    export const deleteCourse = (data) => {
-        return {
-            type : DELETE_COURSE,
-            payload : data
-        }
-    }
-    export const updateCourse = (data) => {
-        return {
-            type : UPDATE_COURSE,
-            payload : data
-        }
-    }
 
 
-
-export const setCourse = (data) =>{
+export const fetchCourseRequest = (data) => {
     return {
-        type : SET_COURSE,
-        payload : data
+        type: GET_COURSES_REQUEST,
+        payload: data
     }
 }
-export const setFormCourse = (data) =>{
+export const addCourse = (data, formCourseRef, onCloseDialog) => {
     return {
-        type : SET_FORM_COURSE,
-        payload : data
+        type: ADD_COURSE,
+        payload: data,
+        formCourseRef,
+        onCloseDialog
+    }
+}
+export const deleteCourse = (data) => {
+    return {
+        type: DELETE_COURSE,
+        payload: data
+    }
+}
+export const updateCourse = (data, formCourseRef, onCloseDialog) => {
+    return {
+        type: UPDATE_COURSE,
+        payload: data,
+        formCourseRef,
+        onCloseDialog
+    }
+}
+
+
+
+export const setCourse = (data) => {
+    return {
+        type: SET_COURSE,
+        payload: data
+    }
+}
+export const setFormCourse = (data) => {
+    return {
+        type: SET_FORM_COURSE,
+        payload: data
     }
 }
 

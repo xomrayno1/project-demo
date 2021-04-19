@@ -1,11 +1,15 @@
 import React, { useEffect, useState, useRef } from 'react';
 import _ from 'lodash';
-import { useSelector,useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { Spin } from 'antd'
-import {Button} from 'reactstrap'
+import { Button } from 'reactstrap'
+import {
+    Row,
+    Col
+} from 'reactstrap'
 
 import TableStudent from './TableStudent'
-import { fetchStudentRequest,addRowStudent } from '../../redux/action/studentAction'
+import { fetchStudentRequest, addRowStudent } from '../../redux/action/studentAction'
 import { defaultFilter } from '../../common/utils'
 import './styles/style.css';
 import {
@@ -13,96 +17,94 @@ import {
 } from '../../common/Constant'
 
 
- 
+
 function StudentList(props) {
-    
+
     console.log("studentList render.....")
     const dispatch = useDispatch();
-    const {data} = useSelector(state => state.student.students)
-    const {pagination} = useSelector(state => state.student.students)
-    const {isLoading} = useSelector(state=> state.student)
+    const { data } = useSelector(state => state.student.students)
+    const { pagination } = useSelector(state => state.student.students)
+    const { isLoading } = useSelector(state => state.student)
     const typingTimeoutRef = useRef(false);
-    const [filter,setFilter] = useState({...defaultFilter})
-  
-    const {isAdd} = useSelector(state => state.app)
+    const [filter, setFilter] = useState({ ...defaultFilter })
 
-    useEffect(()=>{
+    const { isAdd } = useSelector(state => state.app)
+
+    useEffect(() => {
         dispatch(fetchStudentRequest(filter));
-    },[filter])
+    }, [filter])
 
-    
-    function handleSearchName(e){
-    //    if(typingTimeoutRef.current){
-    //        clearTimeout(typingTimeoutRef.current); 
-    //    }
-    //    typingTimeoutRef.current  = setTimeout(()=> {
-    //      setFilter({
-    //          ...filter,
-    //          search : e.target.value,
-    //          page : 1
-    //      })
-    //    },400)
-        const search  =  _.debounce(function(){
-            setFilter({
-                ...filter,
-                search : e.target.value,
-                page : 1
-            })
-        },400)
-        search();        
-    }
-    function handlePagination(page){
+    const searchRef = useRef()
+    function handleSearchName(e) {
+        e.preventDefault();
         setFilter({
             ...filter,
-            page : page,
+            search: searchRef.current.value,
+            page: 1
         })
     }
-    function handleAddClick(){
+    function handlePagination(page) {
+        setFilter({
+            ...filter,
+            page: page,
+        })
+    }
+    function handleAddClick() {
         console.log("add click")
         const newData = {
-            id : '',
-            name : '',
-            email : '',
-            code : '',
-            address : ''
+            id: '',
+            name: '',
+            email: '',
+            code: '',
+            address: ''
         }
         dispatch(addRowStudent(newData));
-        dispatch({type : ADD_EVENT, payload : true})
+        dispatch({ type: ADD_EVENT, payload: true })
     }
 
-    
+
     return (
-       <div className="container"> 
+        <div className="container">
             <h1>Students List</h1>
-            <div className="row" style={{
+
+            <Row style={{
                 marginBottom: '20px'
-                }}>
-                <div className="col-sm-3 text-left">
+            }}>
+                <Col md="4" className="text-left">
                     <Button color="success" style={{
-                        fontFamily : '-moz-initial',
-                        padding : '6px 20px 6px 20px'
-                        }}
+                        fontFamily: '-moz-initial',
+                        padding: '6px 20px 6px 20px'
+                    }}
                         onClick={handleAddClick}
                         disabled={isAdd}
                     >Add</Button>
-                </div>
-                <div className="col-sm-6">
-                     
-                </div>
-                <div className="col-sm-3"  >
-                    <input  className="form-control" onChange={handleSearchName}
-                        type="text" placeholder="Search name ..."  />
-                </div>
-            </div>
-           <Spin spinning={isLoading}>
-                    <TableStudent
-                        data={data} 
-                        pagination={pagination} 
-                        handlePagination={handlePagination}
-                    />
-           </Spin>
-          
-       </div>
+                </Col>
+                <Col md="8"  >
+                    <Row>
+                        <Col md="2"></Col>
+                        <Col md="6" className="text-right">
+                            <form onSubmit={handleSearchName} id="form-search">
+                                <input className="form-control"   ref={searchRef}
+                                    type="text" placeholder="Search name ..." />
+                            </form>
+                        </Col>
+                        <Col md="4"  >
+                            <Button color="primary" type="submit" form="form-search">Search</Button>
+                        </Col>
+
+                    </Row>
+                </Col>
+            </Row>
+
+            <Spin spinning={isLoading}>
+                <TableStudent
+                    data={data}
+                    pagination={pagination}
+                    handlePagination={handlePagination}
+                />
+            </Spin>
+
+        </div>
     )
 }
 

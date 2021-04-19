@@ -18,6 +18,7 @@ import {
 import { UserProvider } from './common/UseContext'
 import AuthenticationRoute from './component/layout/AuthenticationRoute';
 import Enrol from './component/enrol/Enrol';
+import NotFound from './component/NotFound';
 
 
 function App() {
@@ -28,7 +29,6 @@ function App() {
     hasShowError:  false,
     loggedIn: false
   });
- 
   return (
     <div className="App">
       <Router > 
@@ -38,10 +38,11 @@ function App() {
               <AuthenticationRoute path="/courses"  component={CourseList}/>  
               <AuthenticationRoute exact path="/students"  component={StudentList}/>
               <AuthenticationRoute path="/students/enrol/:id"  component={Enrol}/>
-              <Route path="/logout"  component={Login}/> 
-              <Route path="/login"  component={Login}/> 
+              <Route  path="/logout"  component={Login}/> 
+              <Route  exact path="/login"  component={Login}/> 
+              <Route path="*"  component={NotFound}/>
             </Switch>  
-          <Footer/>
+          <Footer/> 
         </UserProvider>
       </Router>
     </div>

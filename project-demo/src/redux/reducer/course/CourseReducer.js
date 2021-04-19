@@ -1,4 +1,4 @@
-import { 
+import {
     SET_COURSE,
     GET_COURSES_REQUEST,
     RECEIVE_COURSE_SUCCESS,
@@ -12,87 +12,87 @@ import {
     ADD_COURSE_FAILED,
     ADD_COURSE_SUCCESS,
     ADD_COURSE,
- } from '../../../common/Constant'
+} from '../../../common/Constant'
 
 const initalState = {
     courses: [],
-    isLoading : false,
-    error : ''
+    isLoading: false,
+    error: ''
 }
-function courseReducer(state = initalState, action){
-    const {type, payload} = action;
-    switch(type){
-        case SET_COURSE: 
+function courseReducer(state = initalState, action) {
+    const { type, payload } = action;
+    switch (type) {
+        case SET_COURSE:
             state.course = payload;
         case GET_COURSES_REQUEST:
             return {
                 ...state,
-                isLoading : true
+                isLoading: true
             }
         case RECEIVE_COURSE_SUCCESS:
             return {
                 ...state,
-                courses : payload,
-                isLoading : false
+                courses: payload,
+                isLoading: false
             }
         case RECEIVE_COURSE_FAILED:
             return {
                 ...state,
                 isLoading: false,
-                error : payload
+                error: payload
             }
         case ADD_COURSE:
             return {
                 ...state,
-                isLoading : true
+                isLoading: true
             }
         case ADD_COURSE_SUCCESS:
             return {
                 ...state,
-                courses : payload,
-                isLoading : false
+                courses: payload,
+                isLoading: false
             }
         case ADD_COURSE_FAILED:
             return {
                 ...state,
                 isLoading: false,
-                error : payload
+                error: payload
             }
         case DELETE_COURSE:
             return {
                 ...state,
-                isLoading : true
+                isLoading: true
             }
         case DELETE_COURSE_SUCCESS:
             return {
                 ...state,
-                courses : payload,
-                isLoading : false
+                courses: payload,
+                isLoading: false
             }
         case DELETE_COURSE_FAILED:
             return {
                 ...state,
                 isLoading: false,
-                error : payload
+                error: payload
             }
         case UPDATE_COURSE:
             return {
                 ...state,
-                isLoading : true
+                isLoading: true
             }
         case UPDATE_COURSE_SUCCESS:
             return {
                 ...state,
-                courses : payload,
-                isLoading : false
+                courses: payload,
+                isLoading: false
             }
         case UPDATE_COURSE_FAILED:
             return {
                 ...state,
                 isLoading: false,
-                error : payload
+                error: payload
             }
-        default :
+        default:
             return state;
     }
 }

@@ -29,7 +29,7 @@ public class StudentDTO {
 	private String email;
 	
 	@JsonProperty("courses")
-	private List<Long> listCourse;
+	private List<String> listCourse;
 	
 	
 	public Long getId() {
@@ -62,10 +62,10 @@ public class StudentDTO {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public List<Long> getListCourse() {
+	public List<String> getListCourse() {
 		return listCourse;
 	}
-	public void setListCourse(List<Long> listCourse) {
+	public void setListCourse(List<String> listCourse) {
 		this.listCourse = listCourse;
 	}
  

@@ -126,14 +126,14 @@ public class CourseController {
 				if(requestCourse.getDescription() != null) {
 					course.setDescription(requestCourse.getDescription());
 				}
-				if(requestCourse.getListStudent() != null) {
-					List<Student> students = new ArrayList<Student>();
-					for(Long item : requestCourse.getListStudent()) {
-						Student student = studentService.findById(item);
-						students.add(student);
-					}
-					course.setStudents(students);
-				}
+//				if(requestCourse.getListStudent() != null) {
+//					List<Student> students = new ArrayList<Student>();
+//					for(Long item : requestCourse.getListStudent()) {
+//						Student student = studentService.findById(item);
+//						students.add(student);
+//					}
+//					course.setStudents(students);
+//				}
 				try {
 					course = courseService.save(course);
 //					CourseDTO courseDTO = convertToDto(course);
@@ -167,24 +167,24 @@ public class CourseController {
 		CourseDTO courseDTO = modelMapper.map(course, CourseDTO.class);
 		if(course.getStudents() != null) {
 			 
-			Long[] students =  course.getStudents().stream()
-												.map(item -> item.getId())
+			String[] students =  course.getStudents().stream()
+												.map(item -> item.getCodeStudent())
 												.collect(Collectors.toList())
-												.toArray(new Long[course.getStudents().size()]);
+												.toArray(new String[course.getStudents().size()]);
 			courseDTO.setListStudent(students);
 		}
 		return courseDTO;
 	}
 	public Course convertToEntity(CourseDTO courseDTO) {
 		Course course = modelMapper.map(courseDTO, Course.class);
-		if(courseDTO.getListStudent() != null) {
-			List<Student> students = new ArrayList<Student>();
-			for(Long item : courseDTO.getListStudent()) {
-				Student student = studentService.findById(item);
-				students.add(student);
-			}
-			course.setStudents(students);
-		}
+//		if(courseDTO.getListStudent() != null) {
+//			List<Student> students = new ArrayList<Student>();
+//			for(Long item : courseDTO.getListStudent()) {
+//				Student student = studentService.findById(item);
+//				students.add(student);
+//			}
+//			course.setStudents(students);
+//		}
 		return course;
 	}
  

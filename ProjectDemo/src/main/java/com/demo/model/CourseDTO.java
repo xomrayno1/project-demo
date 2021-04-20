@@ -21,7 +21,7 @@ public class CourseDTO {
 	private String description;
 	
 	@JsonProperty("students")
-	private Long[] listStudent;
+	private String[] listStudent;
 	
 	public Long getId() {
 		return id;
@@ -47,10 +47,10 @@ public class CourseDTO {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public Long[] getListStudent() {
+	public String[] getListStudent() {
 		return listStudent;
 	}
-	public void setListStudent(Long[] listStudent) {
+	public void setListStudent(String[] listStudent) {
 		this.listStudent = listStudent;
 	}
 	 

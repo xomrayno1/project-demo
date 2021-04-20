@@ -140,14 +140,14 @@ public class StudentController {
 			if(requestStudentDTO.getName() != null) {
 				student.setName(requestStudentDTO.getName());
 			}
-			if(requestStudentDTO.getListCourse() != null) {
-				List<Course> courses = new ArrayList<Course>();
-				for(Long item : requestStudentDTO.getListCourse()) {
-					Course course = courseService.findById(item);
-					courses.add(course);
-				}
-				student.setCourses(courses);
-			}
+//			if(requestStudentDTO.getListCourse() != null) {
+//				List<Course> courses = new ArrayList<Course>();
+//				for(Long item : requestStudentDTO.getListCourse()) {
+//					Course course = courseService.findById(item);
+//					courses.add(course);
+//				}
+//				student.setCourses(courses);
+//			}
 			try {
 				student = studentService.save(student);
 //				StudentDTO studentDTO = converToDto(student);
@@ -208,9 +208,9 @@ public class StudentController {
 	private StudentDTO converToDto(Student student) {
 		StudentDTO studentDTO = modelMapper.map(student, StudentDTO.class);
 		if(student.getCourses() != null) {
-			List<Long> list = new ArrayList<Long>();
+			List<String> list = new ArrayList<String>();
 			student.getCourses().stream().
-					map(item -> list.add(item.getId()))
+					map(item -> list.add(item.getName()))
 					.collect(Collectors.toList());
 			studentDTO.setListCourse(list);
 		}
@@ -218,14 +218,14 @@ public class StudentController {
 	}
 	private Student convertToEntity(StudentDTO studentDTO) {
 		Student student = modelMapper.map(studentDTO, Student.class);
-		if(studentDTO.getListCourse() != null) {
-			List<Course> courses = new ArrayList<Course>();
-			for(Long item : studentDTO.getListCourse()) {
-				Course course = courseService.findById(item);
-				courses.add(course);
-			}
-			student.setCourses(courses);
-		}
+//		if(studentDTO.getListCourse() != null) {
+//			List<Course> courses = new ArrayList<Course>();
+//			for(Long item : studentDTO.getListCourse()) {
+//				Course course = courseService.findById(item);
+//				courses.add(course);
+//			}
+//			student.setCourses(courses);
+//		}
 		return student;
 	}
  

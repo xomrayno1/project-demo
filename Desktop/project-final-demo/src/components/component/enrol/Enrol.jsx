@@ -3,7 +3,7 @@ import { useHistory, useParams } from 'react-router';
 import { Spin, message, Space, Button } from 'antd';
 import _ from 'lodash'
 import { Formik, Form, Field } from 'formik'
-import { Row, Col, Card, CardBody, CardHeader } from 'reactstrap';
+import { Row, Col, Card, CardBody, CardHeader, CardTitle } from 'reactstrap';
 
 import { defaultFilter } from '../../../common/utils'
 import { useSelector, useDispatch } from 'react-redux';
@@ -42,25 +42,27 @@ function Enrol(props) {
             <Row>
                 <Col md="12">
                     <Card className="strpied-tabled-with-hover">
+                        <CardHeader>
+                            <CardTitle>Enrol</CardTitle>
+                        </CardHeader>
                         <CardBody className="table-full-width  px-0">
-
                             <Row>
                                 <Col md="12">
                                     <Spin spinning={isLoading}  >
                                         {!isLoading && <Formik
                                             initialValues={{
-                                                checked: !isLoading && courses && courses.map(String)
+                                                checked: !isLoading && courses && courses.map(item=>item.code)
                                             }}
                                             onSubmit={onSave}
                                         >
                                             {
                                                 (setFieldValue, values) => (
                                                     <Form>
-                                                        <div className=" table-responsive table-hover table-striped">
+                                                        <div className=" table-responsive table-bordered table-hover table-striped">
                                                             <table className="table table-bordered">
                                                                 <thead   >
                                                                     <tr>
-                                                                        <th  >STT</th>
+                                                                        <th>STT</th>
                                                                         <th>Code</th>
                                                                         <th>Name</th>
                                                                         <th> + </th>
@@ -69,7 +71,6 @@ function Enrol(props) {
                                                                 <tbody>
                                                                     {
                                                                         data && data.map((item, idx) => {
-
                                                                             return (
                                                                                 <tr key={idx}>
                                                                                     <td>{idx + 1}</td>
@@ -80,7 +81,7 @@ function Enrol(props) {
                                                                                             key={idx}
                                                                                             type="checkbox"
                                                                                             name="checked"
-                                                                                            value={`${item.id}`}
+                                                                                            value={`${item.code}`}
                                                                                         />
                                                                                     </td>
                                                                                 </tr>

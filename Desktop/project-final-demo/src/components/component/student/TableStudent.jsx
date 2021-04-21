@@ -106,17 +106,17 @@ function TableStudent({ data, pagination, handlePagination }) {
       render: courses => {
         return courses != null ? (
           <>
-          <Divider type="vertical" dashed={true} > 
-            {
-              courses.map(item =>(
-                <Tag color="red" key={item}>
-                  {
-                    item 
-                  }
-                </Tag> 
+            <Divider type="vertical" dashed={true} >
+              {
+                courses.map(item => (
+                  <Tag color="red" key={item}>
+                    {
+                      item.name
+                    }
+                  </Tag>
                 )
-              )
-            }
+                )
+              }
             </Divider>
           </>
         ) : null
@@ -164,7 +164,7 @@ function TableStudent({ data, pagination, handlePagination }) {
               }}
             >
               Edit
-                    </Button>
+            </Button>
           </Space>
         )
       }
@@ -205,7 +205,7 @@ function TableStudent({ data, pagination, handlePagination }) {
           }}
           bordered={true}
           className="table table-bordered border-primary"
-          
+
           size="middle"
         />
       </Form>

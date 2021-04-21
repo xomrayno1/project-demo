@@ -25,7 +25,7 @@ const studentApi = {
     },
     updateEnrol : (params)=>{
         console.log(params)
-        const url = `/api/v1/students/${params.id}/enrol`
+        const url = `/api/v1/students/${params.studentId}/enrol`
         return axiosClient.put(url,params)
     }
 }

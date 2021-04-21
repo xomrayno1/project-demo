@@ -6,6 +6,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import com.demo.response.CourseResponse;
 import com.fasterxml.jackson.annotation.JsonProperty;
 //@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class StudentDTO {
@@ -29,7 +30,7 @@ public class StudentDTO {
 	private String email;
 	
 	@JsonProperty("courses")
-	private List<String> listCourse;
+	private List<CourseResponse> listCourse;
 	
 	
 	public Long getId() {
@@ -62,13 +63,13 @@ public class StudentDTO {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public List<String> getListCourse() {
+	public List<CourseResponse> getListCourse() {
 		return listCourse;
 	}
-	public void setListCourse(List<String> listCourse) {
+	public void setListCourse(List<CourseResponse> listCourse) {
 		this.listCourse = listCourse;
 	}
- 
+	 
 	
 	
 	

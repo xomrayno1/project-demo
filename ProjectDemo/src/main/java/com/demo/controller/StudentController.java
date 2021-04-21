@@ -30,10 +30,11 @@ import com.demo.entity.Course;
 import com.demo.entity.Student;
 import com.demo.exception.ApplicationException;
 import com.demo.exception.ResourceNotFoundException;
-import com.demo.model.EnrolRequest;
 import com.demo.model.Pagination;
 import com.demo.model.StudentDTO;
+import com.demo.request.EnrolRequest;
 import com.demo.response.APIResponse;
+import com.demo.response.CourseResponse;
 import com.demo.service.CourseService;
 import com.demo.service.StudentService;
 import com.demo.utils.Constant;
@@ -140,18 +141,10 @@ public class StudentController {
 			if(requestStudentDTO.getName() != null) {
 				student.setName(requestStudentDTO.getName());
 			}
-//			if(requestStudentDTO.getListCourse() != null) {
-//				List<Course> courses = new ArrayList<Course>();
-//				for(Long item : requestStudentDTO.getListCourse()) {
-//					Course course = courseService.findById(item);
-//					courses.add(course);
-//				}
-//				student.setCourses(courses);
-//			}
+ 
 			try {
 				student = studentService.save(student);
-//				StudentDTO studentDTO = converToDto(student);
-////				return new ResponseEntity<StudentDTO>(studentDTO,HttpStatus.OK);
+ 		 
 				Map<String, String>  dataSuccess = new HashMap<>();
 				dataSuccess.put("message", "Update success");
 				return new ResponseEntity<Object>(dataSuccess, HttpStatus.OK);
@@ -171,14 +164,13 @@ public class StudentController {
 		try {
 			if(enrol.getCourses() != null) {
 				 List<Course> list = new ArrayList<Course>();
-				 for(Long item : enrol.getCourses()) {
-					 list.add(new Course(item));
+				 for(String item : enrol.getCourses()) {
+					  Course course = courseService.findByCode(item);
+					  list.add(course);
 				 }
 				 student.setCourses(list);
 			}
 			student = studentService.save(student);
-//			StudentDTO studentDTO =  converToDto(student);
-//			return new ResponseEntity<StudentDTO>(studentDTO,HttpStatus.OK);
 			Map<String, String>  dataSuccess = new HashMap<>();
 			dataSuccess.put("message", "Save success");
 			return new ResponseEntity<Object>(dataSuccess, HttpStatus.OK);
@@ -200,7 +192,7 @@ public class StudentController {
 		} catch (Exception e) {
 			throw new ApplicationException("Delete Failed",HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-//		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+ 
 	}
 	
   
@@ -208,9 +200,9 @@ public class StudentController {
 	private StudentDTO converToDto(Student student) {
 		StudentDTO studentDTO = modelMapper.map(student, StudentDTO.class);
 		if(student.getCourses() != null) {
-			List<String> list = new ArrayList<String>();
+			List<CourseResponse> list = new ArrayList<CourseResponse>();
 			student.getCourses().stream().
-					map(item -> list.add(item.getName()))
+					map(item -> list.add(new CourseResponse(item.getName(), item.getCode())))
 					.collect(Collectors.toList());
 			studentDTO.setListCourse(list);
 		}
@@ -218,14 +210,6 @@ public class StudentController {
 	}
 	private Student convertToEntity(StudentDTO studentDTO) {
 		Student student = modelMapper.map(studentDTO, Student.class);
-//		if(studentDTO.getListCourse() != null) {
-//			List<Course> courses = new ArrayList<Course>();
-//			for(Long item : studentDTO.getListCourse()) {
-//				Course course = courseService.findById(item);
-//				courses.add(course);
-//			}
-//			student.setCourses(courses);
-//		}
 		return student;
 	}
  
